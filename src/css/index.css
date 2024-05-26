@@ -1,0 +1,130 @@
+@import url("./fonts.css");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .body {
+    font-family: "Geist", sans-serif;
+    background: var(--background);
+  }
+}
+
+@layer base {
+  body {
+    @apply body font-normal;
+  }
+}
+
+:root {
+  --white: #fff;
+  --white-secondary: #fff0ed;
+  --black: #000;
+  --background: var(--white);
+  --text-primary: rgb(29, 29, 31);
+  --text-secondary: rgb(110, 110, 115);
+  --purple: #c5b5ff;
+  --graph-background: rgb(0, 0, 0, 0.1);
+  /* Geist grid system  */
+  --grid-border-color: rgb(31, 31, 31, 1);
+  /* graph submission frequency */
+  --green-1: #e8ffe9;
+  --green-2: #aff0b4;
+  --green-3: #7be187;
+  --green-4: #4dd161;
+  --green-5: #24c241;
+  --green-6: #01b328;
+  --green-7: #019927;
+  --green-8: #008024;
+  --green-9: #006620;
+  --green-10:#004d1b;
+}
+
+.dark {
+  --background: var(--black);
+  --text-primary: rgb(245, 245, 247);
+  --text-secondary: rgb(134, 134, 139);
+  --purple: #9c40ff;
+  --graph-background: rgb(255, 255, 255, 0.2);
+  /* graph submission frequency */
+  --green-1: #004d1b;
+  --green-2: #006620;
+  --green-3: #008024;
+  --green-4: #019927;
+  --green-5: #01b328;
+  --green-6: #24c241;
+  --green-7: #4dd161;
+  --green-8: #7be187;
+  --green-9: #aff0b4;
+  --green-10:#e8ffe9;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* custom underline  */
+/* main */
+.underlineMain {
+  display: inline-block;
+  letter-spacing: -2.7px;
+  line-height: 71px;
+  width: auto;
+}
+
+mark {
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+}
+
+mark::after {
+  z-index: -1;
+  content: "";
+  margin-top: -30px;
+  border-radius: 10px 0 0 10px;
+  display: block;
+  height: 15px;
+  bottom: 0;
+  background-color: transparent;
+  background-image: linear-gradient(90deg,
+      var(--purple) 70%,
+      var(--white-secondary) 100%);
+  background-repeat: no-repeat;
+  transform-origin: center left;
+  transform: rotate(1.3deg);
+}
+
+.dark mark::after {
+  background-image: linear-gradient(60deg,
+      var(--purple) 0%,
+      var(--black) 100%);
+}
+
+/* secondary */
+.underlineText {
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.underlineText::after {
+  position: absolute;
+  height: 2px;
+  width: 100%;
+  left: 0;
+  bottom: 3px;
+  z-index: 1;
+  content: "";
+  transition: height 0.2s ease-out, opacity 0.2s ease-out;
+  background-image: linear-gradient(60deg,
+      var(--white-secondary) 0%,
+      var(--purple) 100%);
+  background-repeat: no-repeat;
+  transform-origin: center right;
+  transform: rotate(-1.3deg);
+  border-radius: 0 10px 10px 0;
+}
+
+
+@media (prefers-color-scheme: light) {}
