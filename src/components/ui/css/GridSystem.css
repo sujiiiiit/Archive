@@ -1,0 +1,70 @@
+:root {
+    --grid-color: rgb(235, 235, 235);
+    --guide-width: 0.5px;
+    --cross-size: 25px;
+    --cross-color: rgb(168, 168, 168);
+    --cross-half-size: calc((var(--cross-size) / 2) + var(--guide-width) - 1.5px);
+
+}
+
+.dark {
+    --grid-color: rgb(31, 31, 31);
+    --cross-color: rgb(135, 135, 135);
+
+}
+
+
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(var(--columns), 1fr);
+    grid-template-rows: repeat(var(--rows), 1fr);
+    border: 1px solid var(--grid-color);
+    border-right: none;
+    border-bottom: none;
+    position: relative;
+}
+
+.grid-guides {
+    display: contents;
+}
+
+.grid-guide {
+    aspect-ratio: 1/1;
+    inset: 0px;
+    grid-column-start: var(--x);
+    grid-column-end: span 1;
+    grid-row-start: var(--y);
+    grid-row-end: span 1;
+    border: 1px solid var(--grid-color);
+    border-left: none;
+    border-top: none;
+}
+
+.grid-cell,
+.grid-cross {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.grid-cell {
+    aspect-ratio: 1/1;
+}
+
+.cross {
+    width: fit-content;
+    height: fit-content;
+    pointer-events: none;
+    position: absolute;
+    grid-column-start: var(--cross-column);
+    grid-row-start: var(--cross-row);
+    z-index: 2;
+    inset: calc(var(--cross-half-size) * -1.05);
+}
+
+.crossLine {
+    position: absolute;
+    border: var(--guide-width) solid var(--cross-color);
+    border-width: 0;
+}

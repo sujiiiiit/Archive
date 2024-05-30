@@ -46,11 +46,9 @@ export default function TextShimmerDemo() {
         )}
       >
         <AnimatedShinyText className=" relative rounded-full inline-flex items-center justify-center px-4 py-1 transition ease-out hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400">
-          <span className="flex items-center	gap-2 font-Geist">
+          <span className="flex items-center	gap-2 ">
             <span>
-              ✨ <span className="xs:hidden	">Unleash my potential, </span>grab
-              my resume!
-            </span>
+              ✨ <span className="xs:hidden	">Get to know my capabilities, </span>See My Resume!</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

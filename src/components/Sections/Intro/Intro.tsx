@@ -23,35 +23,35 @@ const Intro = () => {
                 strokeLinejoin="round"
               ></path>
             </svg>
-            <span className="font-bold inline text-textSecondary text-3xl	">
+            <span className="font-bold inline text-3xl	">
               ,I'm
             </span>
           </div>
           <span className="font-bold underlineMain absolute z-[1] text-textPrimary">
             <mark className="text-textPrimary">Sujit Dwivedi</mark>
           </span>
-          <p className="text-textSecondary text-xl	mt-20 	xs:text-lg	">
-            I'm a<span className="text-textPrimary underlineText">B.Tech</span>
-            student passionate about
+          <p className="text-xl	mt-20 	xs:text-lg	">
+            I'm a{" "}<span className="text-textPrimary underlineText">B.Tech</span>
+            {" "}student passionate about{" "}
             <span className="text-textPrimary underlineText">
               website and app development
             </span>
-            , as well as
+            , as well as{" "}
             <span className="text-textPrimary underlineText">AI and ML</span>
-            projects. I enjoy exploring cutting-edge technologies and bringing
+            {" "}projects. I enjoy exploring cutting-edge technologies and bringing
             innovative ideas to life through coding.
           </p>
-          <p className="mt-5 text-textSecondary text-xl		xs:text-lg	">
-            I've explored
+          <p className="mt-5 text-xl		xs:text-lg	">
+            I've explored{" "}
             <span className="text-textPrimary underlineText">
               C, C++, Java, and Python
             </span>
             , but my problem-solving prowess
-            <span className="text-textPrimary">shines</span> brightest in&nbsp;
+            <span className="text-textPrimary">{" "}shines</span> brightest in{" "}
             <span className="text-[#F7DF1E] underlineText">JavaScript</span>.
             Its dynamic capabilities fuel my
             <span className="text-textPrimary">
-              creativity and effectiveness
+            {" "}creativity and effectiveness{" "}
             </span>
             in finding solutions, making it my preferred language for
             development tasks.
