@@ -33,7 +33,7 @@ interface GridProps {
 }
 
 const Grid: React.FC<GridProps> = ({ rows, columns, children }) => (
-  <div className="grid" style={{ '--rows': rows, '--columns': columns } as React.CSSProperties}>
+  <div className="gridsystem" style={{ '--rows': rows, '--columns': columns } as React.CSSProperties}>
     <div className="grid-guides">
       {Array.from({ length: rows * columns }, (_, index) => {
         const x = (index % columns) + 1;

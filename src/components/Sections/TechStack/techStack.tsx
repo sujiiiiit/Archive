@@ -30,38 +30,38 @@ const GridSystem: React.FC = () => {
   }, []);
 
   return (
-    <section className="mt-20 xs:mt-16 text-textSecondary">
+    <section className="mt-20 xs:mt-16">
       <h2 className="font-bold text-textSecondary text-3xl my-8">
         <span className="underlineText text-textPrimary">TechStacks</span>
         &nbsp;in My Skillset
       </h2>
       <System guideWidth={1}>
         <Grid rows={gridSize.rows} columns={gridSize.columns}>
-          <Cell className="p-12 xs:p-4" row={1} column={1}>
+          <Cell className="p-12 xs:p-7" row={1} column={1}>
             <NodeJs style={{ fill: "var(--techstackLogo-color)" }} />
           </Cell>
-          <Cell className="p-12 xs:p-4" row={1} column={2}>
+          <Cell className="p-12 xs:p-7" row={1} column={2}>
             <NextJs style={{ fill: "var(--techstackLogo-color)" }} />
           </Cell>
-          <Cell className="p-12 xs:p-4" row={1} column={3}>
+          <Cell className="p-12 xs:p-7" row={1} column={3}>
             <ReactJs style={{ fill: "var(--techstackLogo-color)" }} />
           </Cell>
           <Cell
-            className="p-12 xs:p-4"
+            className="p-12 xs:p-7"
             row={gridSize.rows}
             column={gridSize.rows == 1 ? 4 : 1}
           >
             <ViteJs style={{ fill: "var(--techstackLogo-color)" }} />
           </Cell>
           <Cell
-            className="p-12 xs:p-4"
+            className="p-12 xs:p-7"
             row={gridSize.rows}
             column={gridSize.rows == 1 ? 5 : 2}
           >
             <Python style={{ fill: "var(--techstackLogo-color)" }} />
           </Cell>
           <Cell
-            className="p-12 xs:p-4"
+            className="p-12 xs:p-7"
             row={gridSize.rows}
             column={gridSize.rows == 1 ? 6 : 3}
           >
