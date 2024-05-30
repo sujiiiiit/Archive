@@ -3,12 +3,12 @@ import { Cell, Cross, Grid, System } from "@components/ui/GridSystem";
 import "@components/ui/css/GridSystem.css";
 
 // Import your SVG files as React components
-import NodeJs from "../../../assets/nodejs";
-import NextJs from "../../../assets/nextjs";
-import ReactJs from "../../../assets/reactjs";
-import ViteJs from "../../../assets/vitejs";
-import Python from "../../../assets/python";
-import Tailwindcss from "../../../assets/tailwindcss";
+import NodeJs from "@/assets/nodejs";
+import NextJs from "@/assets/nextjs";
+import ReactJs from "@/assets/reactjs";
+import ViteJs from "@/assets/vitejs";
+import Python from "@/assets/python";
+import Tailwindcss from "@/assets/tailwindcss";
 
 const GridSystem: React.FC = () => {
   const [gridSize, setGridSize] = useState({ rows: 4, columns: 4 });
