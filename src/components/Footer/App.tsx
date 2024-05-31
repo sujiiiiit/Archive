@@ -31,9 +31,9 @@ function ParallaxText({ children, baseVelocity = 100 }: ParallaxProps) {
   const x = useTransform(baseX, (v) => `${wrap(-20, -45, v)}%`);
 
   const directionFactor = useRef<number>(1);
-  useAnimationFrame((delta) => {
+  useAnimationFrame((t, delta) => {
     let moveBy = directionFactor.current * baseVelocity * (delta / 1000);
-
+    console.log(t);
     if (velocityFactor.get() < 0) {
       directionFactor.current = -1;
     } else if (velocityFactor.get() > 0) {
@@ -64,7 +64,7 @@ function ParallaxText({ children, baseVelocity = 100 }: ParallaxProps) {
 export default function App() {
   return (
     <section className="flex flex-col gap-[5px] xs:gap-[7px] xs:mb-3">
-      <ParallaxText  baseVelocity={-3}>/Developer</ParallaxText>
+      <ParallaxText baseVelocity={-3}>/Developer</ParallaxText>
       <ParallaxText baseVelocity={3}>/Developer</ParallaxText>
     </section>
   );
