@@ -27,7 +27,7 @@
   --purple: #c5b5ff;
   --graph-background: rgb(0, 0, 0, 0.1);
   /* Geist grid system  */
-  --grid-border-color: rgb(31, 31, 31, 1);
+  --grid-border-color: rgb(31, 31, 31, .1);
   /* graph submission frequency */
   --green-1: #e8ffe9;
   --green-2: #aff0b4;
@@ -40,6 +40,7 @@
   --green-9: #006620;
   --green-10: #004d1b;
   --techstackLogo-color: var(--black);
+  --scrollbar-color:var(--graph-background)
 }
 
 .dark {
@@ -60,6 +61,7 @@
   --green-9: #aff0b4;
   --green-10: #e8ffe9;
   --techstackLogo-color: var(--white);
+  --scrollbar-color:var(--graph-background)
 
 }
 
