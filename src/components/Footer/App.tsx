@@ -31,9 +31,8 @@ function ParallaxText({ children, baseVelocity = 100 }: ParallaxProps) {
   const x = useTransform(baseX, (v) => `${wrap(-20, -45, v)}%`);
 
   const directionFactor = useRef<number>(1);
-  useAnimationFrame((t, delta) => {
+  useAnimationFrame((_t, delta) => {
     let moveBy = directionFactor.current * baseVelocity * (delta / 1000);
-    console.log(t);
     if (velocityFactor.get() < 0) {
       directionFactor.current = -1;
     } else if (velocityFactor.get() > 0) {
