@@ -155,7 +155,7 @@ const ReadMore: React.FC<ReadMoreProps> = ({ children }) => {
         {text.length > limit && (
           <span
             onClick={toggleReadMore}
-            className="read-or-hide text-textPrimary cursor-[url(Move.cur),_pointer]"
+            className="read-or-hide text-textPrimary cursor-pointer"
           >
             {isReadMore ? "....Read More" : " Show Less"}
           </span>
