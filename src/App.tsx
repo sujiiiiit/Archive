@@ -4,6 +4,10 @@ import Header from "@/components/Header/Header";
 import Intro from "@/components/Sections/Intro/Intro";
 import TechStack from "@/components/Sections/TechStack/techStack";
 import Projects from "@/components/Sections/Projects/Projects";
+import TextReveal from "@/components/Sections/TextReveal/Textreveal";
+import Contact from "@/components/Sections/Contact/Contact";
+import VelocityText from "@/components/Footer/App";
+import { Footer } from "@/components/Footer/template/Footer";
 
 const App = () => {
   return (
@@ -23,9 +27,13 @@ const App = () => {
         <div className="m-10 my-0 xs:m-0">
           <Intro />
           <TechStack />
+          <TextReveal text="Everything begins with an idea." />
           <Projects />
+          <Contact />
         </div>
       </div>
+      <VelocityText />
+      <Footer title="Sujit Dwivedi" />
     </>
   );
 };

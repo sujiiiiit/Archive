@@ -31,7 +31,7 @@ const GridSystem: React.FC = () => {
 
   return (
     <section className="mt-20 xs:mt-16">
-      <h2 className="font-bold text-textSecondary text-3xl my-8">
+      <h2 className="font-bold text-3xl my-8">
         <span className="underlineText text-textPrimary">TechStacks</span>
         &nbsp;in My Skillset
       </h2>

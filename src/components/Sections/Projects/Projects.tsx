@@ -188,8 +188,8 @@ const ProjectList: React.FC = () => {
 
   return (
     <section  className="mt-20 xs:mt-16">
-      <h2 className="font-Geist font-bold text-textSecondary text-3xl">
-        Recent <span className="underlineText text-textPrimary">Projects</span>
+      <h2 className="font-bold text-3xl">
+        Here is <span className="underlineText text-textPrimary">mine.</span>
       </h2>
 
       {/* Filter buttons */}
@@ -198,7 +198,7 @@ const ProjectList: React.FC = () => {
           <button
             key={category}
             onClick={() => filterProjects(category)}
-            className={`relative flex flex-row  font-Geist cursor-fancy px-3 py-1 rounded-full ${
+            className={`relative flex flex-row cursor-pointer px-3 py-1 rounded-full ${
               selectedCategory === category
                 ? "text-textPrimary"
                 : "text-textSecondary"
@@ -226,13 +226,13 @@ const ProjectList: React.FC = () => {
         .filter((project) => isProjectInCategory(project.categories))
         .map((project, index) => (
           <div className="projectGroup flex mt-6 xs:mt-0" key={index}>
-            <div className="period font-Geist flex mt-3 mr-3 text-sm xs:text-xs uppercase text-nowrap xs:text-wrap text-textSecondary">
+            <div className="period  flex mt-3 mr-3 text-sm xs:text-xs uppercase text-nowrap xs:text-wrap ">
               {project.time}
             </div>
             <div className="projectItems flex-grow">
               <div className="projectDivider after:content-[''] after:flex-grow after:h-px	after:bg-[#5b5b5b42] w-full  flex h-11 items-center"></div>
               <div className="projectHeading grid gap-2 items-center text-textPrimary text-3xl xs:text-xl">
-                <div className="project font-Geist font-bold underlineText w-fit mr-4">
+                <div className="project font-bold underlineText w-fit mr-4">
                   {project.name}
                 </div>
 
