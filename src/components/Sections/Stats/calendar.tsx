@@ -155,7 +155,7 @@ const Calendar: React.FC<CalendarProps> = ({
                               ? renderColorIntensity(frequency)
                               : "var(--graph-background)",
                         }}
-                        className={`row-span-1 w-[1rem] h-[1rem] rounded-[3px]`}
+                        className={`row-span-1 w-[1rem] h-[1rem] rounded-[3px] hover:border hover:border-[black] dark:hover:border-[white]`}
                       />
                     </Tippy>
                   );
