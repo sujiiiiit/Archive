@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import WebIcon from "@/assets/web";
 import GithubIcon from "@/assets/github";
-import { link } from "fs";
 
 const projects = [
   {
