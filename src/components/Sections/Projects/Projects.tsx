@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import WebIcon from "@/assets/web";
 import GithubIcon from "@/assets/github";
+import Tippy, { useSingleton } from "@tippyjs/react";
 
 const projects = [
   {
@@ -19,7 +20,7 @@ const projects = [
     time: "April 2024",
     description:
       "AI Chat App: A React Native application using Google Gemini for AI-powered chatting. It offers intelligent, real-time conversations with advanced language understanding. Designed for smooth and engaging user interactions.",
-    categories: ["Mobile","AI & ML"],
+    categories: ["Mobile", "AI & ML"],
     tech_stack: ["React Native", "Google Gemini"],
     githubLink: "https://github.com/sujiiiiit/qr_based_verfication_system",
   },
@@ -29,7 +30,7 @@ const projects = [
     description:
       "My Portfolio: Welcome to my personal portfolio! Explore my coding and design projects, showcasing my skills and creativity. Enjoy browsing through my work and get to know my professional journey.",
     categories: ["Web"],
-    tech_stack: ["React", "Node.js","Tailwind CSS"],
+    tech_stack: ["React", "Node.js", "Tailwind CSS"],
     link: "https://sujiiit.vercel.app/",
     githubLink: "https://github.com/sujiiiiit/qr_based_verfication_system",
   },
@@ -39,7 +40,7 @@ const projects = [
     description:
       "A website project designed to stream movies and drama videos in a YouTube-like interface. Enjoy a seamless browsing experience with easy navigation, personalized recommendations, and high-quality streaming. Your favorite films and series are just a click away!",
     categories: ["Web"],
-    tech_stack: ["React", "Node.js","Cloudflare Workers","Tailwind CSS"],
+    tech_stack: ["React", "Node.js", "Cloudflare Workers", "Tailwind CSS"],
     link: "https://youtube-7ax.pages.dev/",
     githubLink: "https://github.com/sujiiiiit/youtube",
   },
@@ -208,6 +209,9 @@ const ProjectList: React.FC = () => {
     return projects.filter((project) => project.categories.includes(category))
       .length;
   };
+  const [source, target] = useSingleton({
+    overrides: ["placement"],
+  });
 
   return (
     <section className="mt-20 xs:mt-16">
@@ -261,14 +265,36 @@ const ProjectList: React.FC = () => {
                   </span>
                   <span className="flex justify-center items-center gap-4 xs:gap-3">
                     {project.link && (
-                    <a href={project.link} target="_blank">
-                      <WebIcon className="fill-textSecondary hover:fill-textPrimary cursor-pointer w-7 h-7 xs:w-6 xs:h-6" />
-                    </a>
+                      <Tippy
+                        moveTransition="transform 0.8s cubic-bezier(0.22, 1, 0.36, 1)"
+                        singleton={target}
+                        delay={100}
+                        arrow={false}
+                        theme="custom"
+                        key={index}
+                        content={"Website"}
+                        placement="top"
+                      >
+                        <a href={project.link} target="_blank">
+                          <WebIcon className="fill-textSecondary hover:fill-textPrimary cursor-pointer w-7 h-7 xs:w-6 xs:h-6" />
+                        </a>
+                      </Tippy>
                     )}
                     {project.githubLink && (
-                    <a href={project.githubLink} target="_blank">
-                      <GithubIcon className="fill-textSecondary hover:fill-textPrimary cursor-pointer w-7 h-7 xs:w-6 xs:h-6" />
-                    </a>
+                      <Tippy
+                        moveTransition="transform 0.8s cubic-bezier(0.22, 1, 0.36, 1)"
+                        singleton={target}
+                        delay={100}
+                        arrow={false}
+                        theme="custom"
+                        key={index+1}
+                        content={"Github"}
+                        placement="top"
+                      >
+                        <a href={project.githubLink} target="_blank">
+                          <GithubIcon className="fill-textSecondary hover:fill-textPrimary cursor-pointer w-7 h-7 xs:w-6 xs:h-6" />
+                        </a>
+                      </Tippy>
                     )}
                   </span>
                 </div>
@@ -297,6 +323,13 @@ const ProjectList: React.FC = () => {
             </div>
           </div>
         ))}
+      <Tippy
+        moveTransition="transform 0.8s cubic-bezier(0.22, 1, 0.36, 1)"
+        singleton={source}
+        delay={500}
+        content=""
+        placement="top"
+      ></Tippy>
     </section>
   );
 };
