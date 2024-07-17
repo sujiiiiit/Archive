@@ -1,54 +1,48 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import WebIcon from "@/assets/web";
+import GithubIcon from "@/assets/github";
+import { link } from "fs";
 
 const projects = [
   {
-    name: "RecipeRover",
+    name: "Identify",
+    time: "May 2023",
+    description:
+      "QR-Based Verification System: A project that generates and sends bulk certificates. Each certificate includes a QR code for easy verification. Ideal for ensuring authenticity and efficiency in certificate distribution.",
+    categories: ["Web"],
+    tech_stack: ["php", "Mysql"],
+    link: "https://sujitstream.000webhostapp.com/",
+    githubLink: "https://github.com/sujiiiiit/qr_based_verfication_system",
+  },
+  {
+    name: "Gemini App",
+    time: "April 2024",
+    description:
+      "AI Chat App: A React Native application using Google Gemini for AI-powered chatting. It offers intelligent, real-time conversations with advanced language understanding. Designed for smooth and engaging user interactions.",
+    categories: ["Mobile","AI & ML"],
+    tech_stack: ["React Native", "Google Gemini"],
+    githubLink: "https://github.com/sujiiiiit/qr_based_verfication_system",
+  },
+  {
+    name: "Archive",
     time: "May 2024",
     description:
-      "RecipeRover is a web app that helps users discover and explore new recipes based on their dietary preferences, ingredients, and nutritional requirements. Step-by-step instructions and nutritional info included.",
+      "My Portfolio: Welcome to my personal portfolio! Explore my coding and design projects, showcasing my skills and creativity. Enjoy browsing through my work and get to know my professional journey.",
     categories: ["Web"],
-    tech_stack: ["React", "Node.js", "MongoDB"],
+    tech_stack: ["React", "Node.js","Tailwind CSS"],
+    link: "https://sujiiit.vercel.app/",
+    githubLink: "https://github.com/sujiiiiit/qr_based_verfication_system",
   },
   {
-    name: "FitTrack",
+    name: "DramaTube",
     time: "June 2024",
     description:
-      "FitTrack is a mobile fitness tracking app for setting and achieving health goals. Track activities, calories burned, and workouts. Provides personalized plans, progress tracking, and social features.",
-    categories: ["Mobile"],
-    tech_stack: ["Swift", "UIKit", "Firebase"],
-  },
-  {
-    name: "HealthGuard",
-    time: "June 2024",
-    description:
-      "HealthGuard is an AI-powered health monitoring system analyzing health metrics from wearable devices. Provides personalized insights and alerts for potential health risks.",
-    categories: ["AI & ML"],
-    tech_stack: ["TensorFlow", "Flask", "AWS"],
-  },
-  {
-    name: "TravelExplorer",
-    time: "June 2024",
-    description:
-      "TravelExplorer is a website for discovering and planning travel adventures. Browse destinations, find tips, book accommodations, and create personalized itineraries.",
+      "A website project designed to stream movies and drama videos in a YouTube-like interface. Enjoy a seamless browsing experience with easy navigation, personalized recommendations, and high-quality streaming. Your favorite films and series are just a click away!",
     categories: ["Web"],
-    tech_stack: ["React", "Node.js", "Express.js", "MongoDB"],
-  },
-  {
-    name: "BudgetBuddy",
-    time: "June 2024",
-    description:
-      "BudgetBuddy is a mobile app for managing finances and tracking expenses. Set budgets, categorize transactions, and visualize spending patterns.",
-    categories: ["Mobile"],
-    tech_stack: ["Kotlin", "Android Jetpack", "Firebase"],
-  },
-  {
-    name: "StockPredictor",
-    time: "June 2024",
-    description:
-      "StockPredictor is a ML model forecasting stock prices based on historical data and market trends. Analyzes company performance, economic indicators, and news sentiment.",
-    categories: ["AI & ML"],
-    tech_stack: ["Python", "Flask", "Google Cloud Platform"],
+    tech_stack: ["React", "Node.js","Cloudflare Workers","Tailwind CSS"],
+    link: "https://youtube-7ax.pages.dev/",
+    githubLink: "https://github.com/sujiiiiit/youtube",
   },
 ];
 
@@ -57,6 +51,11 @@ const techStack = [
     name: "React",
     light_color: "#80DEEA",
     dark_color: "#00838F",
+  },
+  {
+    name: "Tailwind CSS",
+    light_color: "#06B6D4",
+    dark_color: "#06B6D4",
   },
   {
     name: "Node.js",
@@ -119,9 +118,34 @@ const techStack = [
     dark_color: "#2962FF",
   },
   {
+    name: "Mysql",
+    light_color: "#4479A1",
+    dark_color: "#4479A1",
+  },
+  {
     name: "Google Cloud Platform",
     light_color: "#E57373",
     dark_color: "#D32F2F",
+  },
+  {
+    name: "Cloudflare Workers",
+    light_color: "#FF6633",
+    dark_color: "#F8902A",
+  },
+  {
+    name: "php",
+    light_color: "#777BB4",
+    dark_color: "#777BB4",
+  },
+  {
+    name: "Google Gemini",
+    light_color: "#8E75B2",
+    dark_color: "#8E75B2",
+  },
+  {
+    name: "React Native",
+    light_color: "#61DAFB",
+    dark_color: "#61DAFB",
   },
 ];
 
@@ -187,7 +211,7 @@ const ProjectList: React.FC = () => {
   };
 
   return (
-    <section  className="mt-20 xs:mt-16">
+    <section className="mt-20 xs:mt-16">
       <h2 className="font-bold text-3xl">
         Here is <span className="underlineText text-textPrimary">mine.</span>
       </h2>
@@ -232,8 +256,22 @@ const ProjectList: React.FC = () => {
             <div className="projectItems flex-grow">
               <div className="projectDivider after:content-[''] after:flex-grow after:h-px	after:bg-[#5b5b5b42] w-full  flex h-11 items-center"></div>
               <div className="projectHeading grid gap-2 items-center text-textPrimary text-3xl xs:text-xl">
-                <div className="project font-bold underlineText w-fit mr-4">
-                  {project.name}
+                <div className="project flex justify-between items-center">
+                  <span className="font-bold underlineText w-fit mr-4">
+                    {project.name}
+                  </span>
+                  <span className="flex justify-center items-center gap-4 xs:gap-3">
+                    {project.link && (
+                    <a href={project.link} target="_blank">
+                      <WebIcon className="fill-textSecondary hover:fill-textPrimary cursor-pointer w-7 h-7 xs:w-6 xs:h-6" />
+                    </a>
+                    )}
+                    {project.githubLink && (
+                    <a href={project.githubLink} target="_blank">
+                      <GithubIcon className="fill-textSecondary hover:fill-textPrimary cursor-pointer w-7 h-7 xs:w-6 xs:h-6" />
+                    </a>
+                    )}
+                  </span>
                 </div>
 
                 <div className="prjectTechStack flex flex-wrap">
