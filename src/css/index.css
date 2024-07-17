@@ -40,7 +40,7 @@
   --green-9: #006620;
   --green-10: #004d1b;
   --techstackLogo-color: var(--black);
-  --scrollbar-color:var(--graph-background)
+  --scrollbar-color: var(--graph-background)
 }
 
 .dark {
@@ -61,8 +61,7 @@
   --green-9: #aff0b4;
   --green-10: #e8ffe9;
   --techstackLogo-color: var(--white);
-  --scrollbar-color:var(--graph-background)
-
+  --scrollbar-color: var(--graph-background)
 }
 
 * {
@@ -138,3 +137,33 @@ mark::after {
 @media (prefers-color-scheme: light) {}
 
 
+.tippy-box[data-animation="fade"][data-state="hidden"] {
+  opacity: 0;
+}
+
+[data-tippy-root] {
+  max-width: calc(100vw - 10px);
+}
+
+.tippy-box {
+  position: relative;
+  background-color: var(--background);
+  color: var(--text-primary);
+  border: 1px solid var(--graph-background);
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: normal;
+  outline: 0;
+  transition-property: transform, visibility, opacity;
+}
+
+.tippy-box[data-inertia][data-state="visible"] {
+  transition-timing-function: cubic-bezier(0.54, 1.5, 0.38, 1.11);
+}
+
+.tippy-content {
+  position: relative;
+  padding: 5px 9px;
+  z-index: 1;
+}
