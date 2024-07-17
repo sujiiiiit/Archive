@@ -82,7 +82,7 @@ const Calendar: React.FC<CalendarProps> = ({
     <>
       <div
         ref={subGraphRef}
-        className="w-full justify-around flex gap-1 relative overflow-hidden overflow-x-scroll"
+        className="w-full justify-around flex gap-1 relative "
       >
         {selectedMonths.map((selectedMonth, index) => {
           const date = new Date(selectedYear, selectedMonth);

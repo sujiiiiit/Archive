@@ -115,7 +115,7 @@ const SemiDoughnutChart = () => {
   };
 
   return (
-    <div className="flex w-fit gap-3  rounded-lg font-Geist">
+    <div className="xs:w-full flex  xs:justify-between w-fit gap-3  rounded-lg font-Geist">
       <div
         style={{
           position: "relative",

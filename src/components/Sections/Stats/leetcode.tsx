@@ -46,7 +46,7 @@ export default function LeetCode() {
   return (
     <div className="p-4 xs:p-0 flex xs:flex-col overflow-hidden items-center">
       <LeetcodeCharts />
-      <div className={isLoading ? 'animate-pulse' : ''} id="subGraph">
+      <div className={`w-full overflow-auto ${isLoading ? 'animate-pulse' : ''}`} id="subGraph">
         <SubmissionGraph
           submissionCalendar={submissionCalendar}
           selectedMonths={selectedMonths}
