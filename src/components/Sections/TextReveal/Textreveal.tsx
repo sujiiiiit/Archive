@@ -23,7 +23,7 @@ export const TextRevealByWord: FC<TextRevealByWordProps> = ({
   return (
     <div
       ref={targetRef}
-      className={cn("relative z-0 h-[200vh] mx-auto", className)}
+      className={cn("relative z-0 h-[200vh] mx-auto ", className)}
     >
       <div
         className={
@@ -33,7 +33,7 @@ export const TextRevealByWord: FC<TextRevealByWordProps> = ({
         <p
           ref={targetRef}
           className={
-            "font-bold flex flex-wrap p-5 text-2xl text-black/20 dark:text-white/20 md:p-8 md:text-3xl lg:p-10 lg:text-4xl xl:text-5xl"
+            "font-bold flex flex-wrap p-5 text-2xl text-black/20 dark:text-white/20 text-5xl md:p-8 "
           }
         >
           {words.map((word, i) => {
