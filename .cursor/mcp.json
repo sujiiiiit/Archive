@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "code-review-graph": {
+      "command": "uvx",
+      "args": [
+        "code-review-graph",
+        "serve"
+      ],
+      "cwd": "D:\\Archive",
+      "type": "stdio"
+    },
+    "fallow": {
+      "command": "fallow-mcp",
+      "args": []
+    }
+  }
+}
