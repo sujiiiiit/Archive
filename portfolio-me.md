@@ -395,6 +395,42 @@ Options: raw vs smoothed cursor / click → auto-zoom / spring zoom camera / non
 **You said:** **raw vs smoothed cursor** and **click → auto-zoom**.
 **Note:** both are built fresh for the website (see Q53). The smoothing demo can use your own zero-phase approach, which is yours.
 
+### Round 15: telling people every project has a story (projects section)
+
+_Context: the homepage projects section is built (list and grid view, a fan of cards on hover, dummy content). You wanted the site to say that every project has a story, and to talk it through before building it._
+
+**Q57. Where should "every project has a story" show up?**
+Options: a quiet line under the "projects" heading / a handwritten aside beside the heading (like nexvyn's "psst" notes) / only on hover per row ("story →") / rename the section to "stories"
+**You said:** **a handwritten aside**, next to the heading, with a small hand-drawn arrow.
+**Read:** it says it once, in a personal voice, without adding another block of text. It echoes the taped photo: things on this site feel placed by hand.
+
+**Q58. The wording**
+Options: "Every one of these broke something before it worked" / "Each of these has a story behind it" / "psst, each one has a story. click one." / "Not a list of repos. Each one is a story…"
+**You said (your own line):** **"every project has a story"**
+**Read:** plain and lowercase, which suits a handwritten note. Use your words exactly.
+
+**Q59. What does clicking a project do?**
+Options: the row opens its story / the story plus a small separate live link / the live link with an optional story link
+**You said:** **the row opens its story.** The GitHub count stays its own link, and the live site or repo link lives inside the story page.
+
+**Q60. Should the hover fan of cards hint at the story?**
+Options: swap a card for the story's first line / keep as is / a story title and read-time card
+**You said:** **keep as is.** Two screens, the stack, the status. The story stays behind the click.
+
+**Decision for the build:** a handwritten aside beside "projects" that reads *every project has a story*, with a small drawn arrow. Each row links to `/projects/<slug>` (the story pages, still to be designed). The fan of cards is unchanged.
+
+**Q61. Where does the "how I work" text go?**
+Your text: *"I work between design and engineering, making sure things not only look right but work the way they should. Most of what I know comes from taking things apart, understanding how they work, and building them back better."*
+Options: its own block between the hero and projects / inside the hero / before the "Creative Developer" punchline / save for an about page
+**You said:** first picked the block between the hero and projects, then changed it: **"add it after the when asked what i do para"**. It now sits in the hero as two paragraphs right after "When asked what I do… I'm a Creative Developer."
+**Then you set the final wording and order:** the second line is **"Most of what I know came from the things I reverse-engineer and rebuild from scratch."**, kept exactly as written, and **"I'm a Creative Developer." is the last line of the hero.** The hero now reads: hello, I'm / Sujit Dwivedi / When asked what I do… / I work between design and engineering… / Most of what I know came from… / I'm a Creative Developer.
+**Note:** I flagged that this wording is very close to nexvyn's intro. You chose to keep it as is.
+
+**Q62. Three paragraphs into two, same words?**
+Options: merge the second and third / regroup by meaning (what I do, then how I work and learn) / the same regrouping with the verb list as its own sentence
+**You said:** **"cool update it"** to the regrouping I recommended. The hero now reads: *"When asked what I do, I say software engineer. But there's more: I work between design and engineering, making sure things not only look right but work the way they should."* / *"I observe, overthink, plan, design, build, test, ship, break things, debug, fix them… and most of what I know came from the things I reverse-engineer and rebuild from scratch."* / *I'm a Creative Developer.*
+**Read:** "break things, debug, fix them…" now runs straight into "reverse-engineer and rebuild", so the two halves explain each other.
+
 ### Other projects
 - **The side app:** a macOS Screen Studio-style app with recording, auto-zoom, smoothed cursor, backgrounds, camera layouts, a timeline editor and multi-aspect export. Built on Electron, Pixi.js, native code and mediabunny. It works and is 100% your own code, but it isn't public yet.
   - **Rule:** use **dummy content** for the app on the portfolio for now. Use a **placeholder name** and **don't show its logo**. Real name and branding stay hidden until you decide otherwise.

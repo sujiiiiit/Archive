@@ -1,36 +1,67 @@
+import Image from "next/image"
+
+import { Hello } from "@/components/hero/hello"
+import { ReverseEngineer } from "@/components/hero/reverse-engineer"
+
 function Hero() {
   return (
-    <main className="mx-auto flex min-h-svh max-w-310 flex-col items-center px-8 pt-[6svh] pb-[3svh] font-display">
-      <section className="flex items-center justify-center gap-[clamp(20px,3vw,40px)] max-[700px]:flex-col">
-        <div className="w-[min(28.5rem,60vw)]">
-          <h1 className="mb-[0.6svh] text-[clamp(1.4rem,2.2vw,2rem)] leading-[1.2] font-medium tracking-[-0.01em] whitespace-nowrap">
-            Sujit Dwivedi
-            <small className="ml-[0.35em] font-accent text-[0.72em] font-normal text-muted-foreground italic">
-              @sujiiiiit
-            </small>
-          </h1>
+    <section className="flex items-center justify-center gap-[clamp(20px,3vw,40px)] max-[700px]:flex-col">
+      <div className="w-[min(28.5rem,60vw)] max-[700px]:w-full">
+        <Hello />
+        <h1 className="mb-[0.6svh] text-[clamp(1.4rem,2.2vw,2rem)] leading-[1.2] font-medium tracking-[-0.01em] whitespace-nowrap">
+          Sujit Dwivedi
+        </h1>
 
-          <p className="min-h-[7em] font-text text-[clamp(.88rem,1.05vw,1rem)] leading-[1.7] text-foreground/75 max-[700px]:min-h-[9em]">
-            When asked what I do, I say software engineer. Then I keep going. I
-            observe, overthink, plan, design, build, ship, break things, debug,
-            fix them&hellip;
-            <span className="mt-[0.15em] block text-foreground">
-              I&rsquo;m a{" "}
-              <em className="font-accent text-[1.67em]">Creative Developer.</em>
-            </span>
+        <div className="space-y-4 font-text text-[clamp(.88rem,1.05vw,1rem)] leading-[1.7] text-foreground/75">
+          <p>
+            When asked what I do, I say software engineer. But there&rsquo;s
+            more: I work between design and engineering, making sure things not
+            only look right but work the way they should.
+          </p>
+          <p>
+            I observe, overthink, plan, design, build, test, ship, break things,
+            debug, fix them&hellip; and most of what I know came from the things
+            I <ReverseEngineer /> and rebuild from scratch.
+          </p>
+          {/* the hero ends on this */}
+          <p className="text-foreground">
+            I&rsquo;m a{" "}
+            <em className="font-accent text-[1.67em]">Creative Developer.</em>
           </p>
         </div>
+      </div>
 
-        {/* instax frame, 511 x 842: thin sides, wide bottom lip */}
-        <figure className="w-[clamp(120px,11.5vw,165px)] flex-none rotate-3">
-          <div className="aspect-511/842 bg-card pt-[14%] pr-[7.5%] pb-[31.5%] pl-[7%] shadow-[0_10px_28px_rgb(0_0_0/0.22)] dark:bg-primary">
-            <div className="grid size-full place-items-center bg-foreground font-accent text-[0.8rem] text-background italic dark:bg-background dark:text-muted-foreground">
-              photo soon
-            </div>
-          </div>
-        </figure>
-      </section>
-    </main>
+      {/* a print taped to the wall, dimmed a touch in dark mode like a lamp-lit room */}
+      <figure className="relative mt-[clamp(28px,4vw,48px)] w-[clamp(120px,11.5vw,165px)] flex-none -rotate-1 dark:brightness-90">
+        {/* taped only at the top, the bottom-left corner lifts: a wedge of shadow, thin at the tape, wide at the bottom */}
+        <div
+          aria-hidden
+          className="absolute inset-0 origin-top translate-y-0.5 scale-y-[1.015] -skew-x-6 bg-black/40 blur-[3px] dark:bg-black/70"
+        />
+        <div className="relative bg-paper p-[1.6%] shadow-[0_0_1px_rgb(0_0_0/0.3)]">
+          <Image
+            src="/avatar.png"
+            alt="Sujit Dwivedi"
+            width={541}
+            height={621}
+            priority
+            className="block h-auto w-full"
+          />
+        </div>
+
+        {/*
+            real paper tape cutout, 1324 x 1188. Its fold line (604px down, 50.8%) is where it bends over the print,
+            so that line sits on the print's top edge. The visible tape spans x 176-1190, centred at 51.6%.
+          */}
+        <Image
+          src="/papertape_cutout.png"
+          alt=""
+          width={1324}
+          height={1188}
+          className="absolute top-0 left-1/2 w-[63%] max-w-none translate-x-[-51.6%] translate-y-[-50.8%]"
+        />
+      </figure>
+    </section>
   )
 }
 

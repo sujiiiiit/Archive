@@ -1,4 +1,4 @@
-import { EB_Garamond, Inter, Newsreader } from "next/font/google"
+import { Caveat, EB_Garamond, Inter, Newsreader } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -23,6 +23,12 @@ const garamond = EB_Garamond({
   variable: "--font-eb-garamond",
 })
 
+// handwriting, only for the pencil notes scribbled beside things
+const caveat = Caveat({
+  subsets: ["latin"],
+  variable: "--font-caveat",
+})
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -37,10 +43,12 @@ export default function RootLayout({
         inter.variable,
         newsreader.variable,
         garamond.variable,
+        caveat.variable,
         "font-sans"
       )}
     >
-      <body>
+      {/* extensions such as ColorZilla add attributes to <body> before React loads */}
+      <body suppressHydrationWarning>
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
