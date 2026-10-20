@@ -1,4 +1,4 @@
-import { Geist_Mono, Inter } from "next/font/google"
+import { EB_Garamond, Inter, Newsreader } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -9,9 +9,18 @@ const inter = Inter({
   variable: "--font-inter",
 })
 
-const geistMono = Geist_Mono({
+// display serif for the name, Garamond italic for the handle and accent words
+const newsreader = Newsreader({
   subsets: ["latin"],
-  variable: "--font-geist-mono",
+  axes: ["opsz"],
+  variable: "--font-newsreader",
+})
+
+const garamond = EB_Garamond({
+  subsets: ["latin"],
+  weight: "400",
+  style: "italic",
+  variable: "--font-eb-garamond",
 })
 
 export default function RootLayout({
@@ -26,7 +35,8 @@ export default function RootLayout({
       className={cn(
         "antialiased",
         inter.variable,
-        geistMono.variable,
+        newsreader.variable,
+        garamond.variable,
         "font-sans"
       )}
     >
