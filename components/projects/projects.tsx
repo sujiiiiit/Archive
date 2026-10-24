@@ -1,24 +1,32 @@
 "use client"
 
-import { useState, type ComponentProps, type FocusEvent } from "react"
+import {
+  useEffect,
+  useState,
+  type ComponentProps,
+  type FocusEvent,
+} from "react"
 import {
   ArrowUpRight01Icon,
-  BrowserIcon,
   ComputerVideoIcon,
   Cursor01Icon,
+  FolderClosedIcon,
   GithubIcon,
   GridViewIcon,
   Menu01Icon,
   StarIcon,
-  StickyNote01Icon,
-  ZoomInAreaIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react"
+import Link from "next/link"
 import {
+  animate,
   AnimatePresence,
   MotionConfig,
   motion,
+  motionValue,
   useReducedMotion,
+  useTransform,
+  type MotionValue,
 } from "motion/react"
 
 import { buttonVariants } from "@/components/ui/button"
@@ -38,10 +46,10 @@ type Project = {
 // dummy content: swap in the real projects, no logos
 const projects: Project[] = [
   {
-    name: "untitled studio",
+    name: "openscreen",
     blurb: "Screen recordings that look edited before you edit them.",
     icon: ComputerVideoIcon,
-    href: "#",
+    href: "/projects/openscreen",
     repo: { href: "#", stars: 128 },
     stack: ["Electron", "PixiJS", "WebCodecs"],
     status: "Paused",
@@ -51,34 +59,19 @@ const projects: Project[] = [
     name: "smooth-cursor",
     blurb: "Takes the shake out of a recorded cursor, without the lag.",
     icon: Cursor01Icon,
-    href: "#",
+    href: "/projects/smooth-cursor",
     repo: { href: "#", stars: 42 },
     stack: ["TypeScript", "Vitest"],
     status: "Beta",
     year: 2026,
   },
-  {
-    name: "auto-zoom",
-    blurb: "Finds where you clicked and zooms in on it.",
-    icon: ZoomInAreaIcon,
-    href: "#",
-    repo: { href: "#", stars: 9 },
-    stack: ["TypeScript", "PixiJS"],
-    status: "Beta",
-    year: 2026,
-  },
-  {
-    name: "this site",
-    blurb: "A portfolio with a photo taped to the wall.",
-    icon: BrowserIcon,
-    href: "#",
-    stack: ["Next.js", "React", "Tailwind"],
-    status: "Live",
-    year: 2026,
-  },
 ]
 
-const spring = { type: "spring", duration: 0.45, bounce: 0.15 } as const
+// no bounce: things settle, they never wobble past where they land
+const spring = { type: "spring", duration: 0.45, bounce: 0 } as const
+
+// an open row's fan of cards, matching its h-20
+const fanHeight = 80
 
 // where each card lands when a row opens, dealt left to right
 const fan = [
@@ -89,18 +82,25 @@ const fan = [
 ]
 
 function Projects() {
-  const [view, setView] = useState<"list" | "grid">("list")
+  const [view, setView] = useState<"list" | "grid">("grid")
+  const [active, bind] = useActive<string>()
+  // how far each row's fan is open, in px
+  const [fans] = useState(() => projects.map(() => motionValue(0)))
+  const reserve = useTransform(fans, (open: number[]) =>
+    Math.max(0, fanHeight - open.reduce((a, b) => a + b, 0))
+  )
 
   return (
     <MotionConfig reducedMotion="user" transition={spring}>
-      <section className="mt-24 w-0 min-w-full">
+      <section id="projects" className="mt-24 w-0 min-w-full scroll-mt-[6svh]">
         <div className="flex items-center justify-between">
           <div className="flex flex-wrap items-center gap-x-1.5">
-            <h2 className="flex items-center gap-1.5 font-accent text-xl text-muted-foreground italic">
+            {/* the icon a touch taller than the text (17 to 15), so it reads as the same size beside the letters */}
+            <h2 className="flex items-center gap-1.5 font-sans text-[15px] text-muted-foreground">
               <HugeiconsIcon
-                icon={StickyNote01Icon}
-                size={18}
-                strokeWidth={1.5}
+                icon={FolderClosedIcon}
+                size={17}
+                strokeWidth={1.75}
               />
               projects
             </h2>
@@ -132,7 +132,11 @@ function Projects() {
             transition={{ duration: 0.2 }}
             className={view === "list" ? "mt-3" : "mt-5 flex flex-col gap-10"}
           >
-            {view === "list" ? <List /> : <Grid />}
+            {view === "list" ? (
+              <List active={active} bind={bind} fans={fans} />
+            ) : (
+              <Grid />
+            )}
           </motion.ul>
         </AnimatePresence>
 
@@ -148,6 +152,10 @@ function Projects() {
           See more
           <HugeiconsIcon icon={ArrowUpRight01Icon} data-icon="inline-end" />
         </a>
+
+        {/* gives back exactly what the open fans take, frame by frame, so hovering never changes the
+            page's height: a page that shrinks while scrolled to the bottom snaps back up */}
+        <motion.div aria-hidden style={{ height: reserve }} />
       </section>
     </MotionConfig>
   )
@@ -207,16 +215,17 @@ function ViewButton({
       onClick={onClick}
       className="cursor-pointer rounded-md p-1.5 text-muted-foreground/50 transition-colors duration-200 hover:text-muted-foreground aria-pressed:text-foreground"
     >
-      <HugeiconsIcon icon={icon} size={18} />
+      <HugeiconsIcon icon={icon} size={17} />
     </button>
   )
 }
 
-// hover or keyboard focus, whichever came last; focus moving inside the item keeps it
+// hover or keyboard focus, whichever came last; focus moving inside the item keeps it.
+// hover starts on a real pointer move, not on enter, so rows scrolling under a resting cursor stay shut
 function useActive<T>() {
   const [active, setActive] = useState<T | null>(null)
   const bind = (value: T) => ({
-    onMouseEnter: () => setActive(value),
+    onPointerMove: () => setActive(value),
     onMouseLeave: () => setActive(null),
     onFocus: () => setActive(value),
     onBlur: (e: FocusEvent<HTMLElement>) => {
@@ -226,14 +235,21 @@ function useActive<T>() {
   return [active, bind] as const
 }
 
-function List() {
-  const [active, bind] = useActive<string>()
-
-  return projects.map((p) => (
+function List({
+  active,
+  bind,
+  fans,
+}: {
+  active: string | null
+  bind: ReturnType<typeof useActive<string>>[1]
+  fans: MotionValue<number>[]
+}) {
+  return projects.map((p, i) => (
     <ListRow
       key={p.name}
       project={p}
       active={active === p.name}
+      fan={fans[i]}
       {...bind(p.name)}
     />
   ))
@@ -243,8 +259,20 @@ function List() {
 function ListRow({
   project: p,
   active,
+  fan,
   ...props
-}: ComponentProps<"li"> & { project: Project; active: boolean }) {
+}: ComponentProps<"li"> & {
+  project: Project
+  active: boolean
+  fan: MotionValue<number>
+}) {
+  useEffect(() => {
+    const controls = animate(fan, active ? fanHeight : 0, spring)
+    return () => controls.stop()
+  }, [active, fan])
+  // leaving the list view puts the row's share back in the reserve
+  useEffect(() => () => fan.set(0), [fan])
+
   return (
     <li className="relative -mx-4 px-4" {...props}>
       <motion.div
@@ -254,9 +282,9 @@ function ListRow({
         transition={{ duration: 0.2 }}
         className="absolute inset-0 rounded-2xl bg-muted dark:bg-muted/60"
       />
-      <a
+      <Link
         href={p.href}
-        aria-label={`Visit ${p.name}`}
+        aria-label={`Read the story of ${p.name}`}
         className="absolute inset-0 rounded-2xl outline-offset-2"
       />
 
@@ -307,44 +335,39 @@ function ListRow({
       </div>
 
       {/* the row opens into a fan of cards: two screens, the stack, where it stands */}
-      <AnimatePresence initial={false}>
-        {active && (
-          <motion.div
-            aria-hidden
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="pointer-events-none relative overflow-hidden"
+      <motion.div
+        aria-hidden
+        initial={false}
+        animate={{ opacity: active ? 1 : 0 }}
+        style={{ height: fan }}
+        className="pointer-events-none relative overflow-hidden"
+      >
+        <motion.div
+          initial={false}
+          animate={active ? "open" : "closed"}
+          variants={{ open: { transition: { staggerChildren: 0.04 } } }}
+          className="flex h-20 items-end justify-center mask-b-from-50% mask-b-to-98%"
+        >
+          <FanCard index={0}>
+            <Screen />
+          </FanCard>
+          <FanCard index={1} className="z-10">
+            <Screen grid />
+          </FanCard>
+          <FanCard
+            index={2}
+            className="py-2 pr-2 pl-3 font-text text-[11px] leading-relaxed text-muted-foreground"
           >
-            <motion.div
-              initial="closed"
-              animate="open"
-              exit="closed"
-              variants={{ open: { transition: { staggerChildren: 0.04 } } }}
-              className="flex h-20 items-end justify-center mask-b-from-50% mask-b-to-98%"
-            >
-              <FanCard index={0}>
-                <Screen />
-              </FanCard>
-              <FanCard index={1} className="z-10">
-                <Screen grid />
-              </FanCard>
-              <FanCard
-                index={2}
-                className="py-2 pr-2 pl-3 font-text text-[11px] leading-relaxed text-muted-foreground"
-              >
-                {p.stack.map((s) => (
-                  <div key={s}>{s}</div>
-                ))}
-              </FanCard>
-              <FanCard index={3} className="p-2 font-display">
-                <div className="text-sm font-medium">{p.status}</div>
-                <div className="text-xs text-muted-foreground">{p.year}</div>
-              </FanCard>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            {p.stack.map((s) => (
+              <div key={s}>{s}</div>
+            ))}
+          </FanCard>
+          <FanCard index={3} className="p-2 font-display">
+            <div className="text-sm font-medium">{p.status}</div>
+            <div className="text-xs text-muted-foreground">{p.year}</div>
+          </FanCard>
+        </motion.div>
+      </motion.div>
     </li>
   )
 }
@@ -354,9 +377,9 @@ function Grid() {
 
   return projects.map((p) => (
     <li key={p.name} className="relative" {...bind(p.name)}>
-      <a
+      <Link
         href={p.href}
-        aria-label={`Visit ${p.name}`}
+        aria-label={`Read the story of ${p.name}`}
         className="absolute inset-0 z-10 rounded-xl outline-offset-4"
       />
       <div className="flex items-center justify-between pb-2">
@@ -372,7 +395,7 @@ function Grid() {
       </div>
       {/* a window peeking up from the bottom, soft-focused so the icon reads first; it rises on hover */}
       <div className="relative grid aspect-1200/630 place-items-center overflow-hidden rounded-xl border bg-muted dark:bg-muted/50">
-        <motion.div
+  <motion.div
           initial={false}
           animate={{ y: active === p.name ? "-4%" : "0%" }}
           className="absolute inset-x-[8%] top-[12%] bottom-[-4%] overflow-hidden rounded-t-xl border shadow-sm blur-[3px]"
@@ -388,16 +411,13 @@ function Grid() {
         />
         <motion.span
           initial={false}
-          animate={{
-            opacity: active === p.name ? 1 : 0,
-            scale: active === p.name ? 1 : 0.8,
-          }}
+          animate={{ opacity: active === p.name ? 1 : 0 }}
           className="absolute top-2 right-2 rounded-full border bg-background/80 p-1.5 shadow-xs backdrop-blur-sm"
         >
           <HugeiconsIcon icon={ArrowUpRight01Icon} size={14} />
         </motion.span>
       </div>
-      <p className="pt-2 font-text text-sm text-balance text-muted-foreground">
+      <p className="pt-3 font-text text-[0.9375rem] leading-relaxed text-balance text-muted-foreground">
         {p.blurb}
       </p>
     </li>

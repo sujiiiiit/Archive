@@ -1,22 +1,26 @@
 import Image from "next/image"
 
+import { DesignWord } from "@/components/hero/design-word"
+import { EngineeringWord } from "@/components/hero/engineering-word"
 import { Hello } from "@/components/hero/hello"
 import { ReverseEngineer } from "@/components/hero/reverse-engineer"
 
 function Hero() {
   return (
-    <section className="flex items-center justify-center gap-[clamp(20px,3vw,40px)] max-[700px]:flex-col">
+    <section
+      id="about"
+      className="flex scroll-mt-[6svh] items-center justify-center gap-[clamp(20px,3vw,40px)] max-[700px]:flex-col"
+    >
       <div className="w-[min(28.5rem,60vw)] max-[700px]:w-full">
         <Hello />
         <h1 className="mb-[0.6svh] text-[clamp(1.4rem,2.2vw,2rem)] leading-[1.2] font-medium tracking-[-0.01em] whitespace-nowrap">
           Sujit Dwivedi
         </h1>
 
-        <div className="space-y-4 font-text text-[clamp(.88rem,1.05vw,1rem)] leading-[1.7] text-foreground/75">
+        <div className="space-y-4 font-text text-[clamp(.9375rem,1.1vw,1.0625rem)] leading-[1.75] text-pretty text-foreground/75">
           <p>
             When asked what I do, I say software engineer. But there&rsquo;s
-            more: I work between design and engineering, making sure things not
-            only look right but work the way they should.
+            more: I bring <DesignWord /> and <EngineeringWord /> together.
           </p>
           <p>
             I observe, overthink, plan, design, build, test, ship, break things,
@@ -40,10 +44,10 @@ function Hero() {
         />
         <div className="relative bg-paper p-[1.6%] shadow-[0_0_1px_rgb(0_0_0/0.3)]">
           <Image
-            src="/avatar.png"
+            src="/img.jpg"
             alt="Sujit Dwivedi"
             width={541}
-            height={621}
+            height={665}
             priority
             className="block h-auto w-full"
           />

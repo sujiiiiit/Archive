@@ -431,6 +431,24 @@ Options: merge the second and third / regroup by meaning (what I do, then how I 
 **You said:** **"cool update it"** to the regrouping I recommended. The hero now reads: *"When asked what I do, I say software engineer. But there's more: I work between design and engineering, making sure things not only look right but work the way they should."* / *"I observe, overthink, plan, design, build, test, ship, break things, debug, fix them… and most of what I know came from the things I reverse-engineer and rebuild from scratch."* / *I'm a Creative Developer.*
 **Read:** "break things, debug, fix them…" now runs straight into "reverse-engineer and rebuild", so the two halves explain each other.
 
+**Q63. nexvyn's Design / Engineer hovers: copy them, or make your own?**
+Context: on nexvyn, hovering "Design" grows a crayon bouquet and hovering "Engineer" drafts a blueprint wrench. I suggested reusing only the idea (the word redrawn, a drawing growing out of it) with your own pictures.
+**You said:** *"i need a different design than this not exactly this but more cool beautiful"*, for **design** and **engineering** in the first paragraph.
+**Built:** each word acts out the tool it stands for, in theme colours only (the one hue is the theme's red):
+- *design*: a cursor drags a marquee over the word. When it lets go, the word is a selected layer with corner handles, its real size in px, and a red spacing guide out to the paragraph's edge.
+- *engineering*: a ruler and a track slide in, and a red playhead with a running timecode scrubs across the word, rendering it as it goes. This borrows from your recorder work.
+
+**Your feedback:** *"design looks too sloppy… use normal fonts instead of mono… color should be from our theme… clean modern design"*, then *"make the seek from bold to thinner and dark to fade linear gradient, make it more authentic seek"*.
+**Changed:**
+- Removed the red, the cursor, the spacing guide, the ruler and the diamonds.
+- The readouts are now design-system chips (tooltip style) in the paragraph's own font, using theme greys only.
+- The seek is now a hairline rail. A tapered trail runs from thin and faint at the start to bold and dark at the playhead, which ends in a round thumb. The playhead line fades as it drops to the thumb.
+**Read:** you want the clean, quiet system look over playful detail. Precision reads as "you", decoration doesn't.
+
+**Then:** *"the vertical seek should be linear gradient not the horizontal one, also how can we enhance it displaying it as timeline?"*
+Options: the word as a clip / a subtle time ruler / stacked tracks (video, cursor, zoom) / your auto-zoom shown live.
+**You said:** **"cool update it"** to my recommendation, the clip plus auto-zoom. "engineering" now sits on a clip with trim handles, and a zoom track runs under it. As the playhead crosses the zoom segment, the segment lights up and the word zooms in, then eases back out. It's your side app's feature, in miniature. The playhead line tapers and fades; the rails are plain.
+
 ### Other projects
 - **The side app:** a macOS Screen Studio-style app with recording, auto-zoom, smoothed cursor, backgrounds, camera layouts, a timeline editor and multi-aspect export. Built on Electron, Pixi.js, native code and mediabunny. It works and is 100% your own code, but it isn't public yet.
   - **Rule:** use **dummy content** for the app on the portfolio for now. Use a **placeholder name** and **don't show its logo**. Real name and branding stay hidden until you decide otherwise.

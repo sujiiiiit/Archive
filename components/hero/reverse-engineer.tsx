@@ -1,14 +1,9 @@
 "use client"
 
-import {
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-  type CSSProperties,
-  type MouseEvent,
-} from "react"
+import { useLayoutEffect, useState, type CSSProperties } from "react"
 import { useReducedMotion } from "motion/react"
+
+import { Spotlight, useReveal, wordClass } from "@/components/hero/reveal"
 
 const WORD = "reverse-engineer"
 const EASE = "cubic-bezier(.22,.8,.14,1)"
@@ -31,9 +26,12 @@ function measure(word: HTMLElement): Geometry {
 // the word lifts out of the sentence into an exploded stack of what makes it: code, render, inspect
 function ReverseEngineer() {
   const reduce = useReducedMotion()
-  const word = useRef<HTMLSpanElement>(null)
   const [geo, setGeo] = useState<Geometry>({ rest: 0.5, k: 1, dx: 0 })
-  const [open, setOpen] = useState(false)
+  const {
+    ref: word,
+    open,
+    props,
+  } = useReveal<HTMLSpanElement>((el) => setGeo(measure(el)))
 
   useLayoutEffect(() => {
     const update = () => word.current && setGeo(measure(word.current))
@@ -41,46 +39,14 @@ function ReverseEngineer() {
     document.fonts?.ready.then(update)
     addEventListener("resize", update)
     return () => removeEventListener("resize", update)
-  }, [])
-
-  // a tap elsewhere closes it on touch screens
-  useEffect(() => {
-    if (!open) return
-    const close = (e: globalThis.MouseEvent) => {
-      if (!word.current?.contains(e.target as Node)) setOpen(false)
-    }
-    document.addEventListener("click", close)
-    return () => document.removeEventListener("click", close)
-  }, [open])
-
-  const show = () => {
-    if (open || !word.current) return
-    setGeo(measure(word.current))
-    // one frame at rest first, so the stack starts exactly on the word
-    requestAnimationFrame(() => setOpen(true))
-  }
-  const hide = () => setOpen(false)
-  const tap = (e: MouseEvent) => {
-    if ((e.nativeEvent as PointerEvent).pointerType !== "mouse") {
-      if (open) hide()
-      else show()
-    }
-  }
+  }, [word])
 
   const still = reduce ? { transition: "none" } : {}
   const { rest, k, dx } = geo
 
   return (
     <span
-      ref={word}
-      tabIndex={0}
-      role="button"
-      aria-pressed={open}
-      onMouseEnter={show}
-      onMouseLeave={hide}
-      onFocus={show}
-      onBlur={hide}
-      onClick={tap}
+      {...props}
       style={{
         color: open ? "transparent" : undefined,
         textDecorationColor: open ? "transparent" : undefined,
@@ -91,7 +57,7 @@ function ReverseEngineer() {
           : "color 0s linear .85s, text-decoration-color 0s linear .85s",
         ...still,
       }}
-      className="relative inline-block cursor-default rounded-xs font-medium whitespace-nowrap text-foreground underline decoration-muted-foreground/50 decoration-dotted underline-offset-[5px] outline-none [-webkit-tap-highlight-color:transparent] focus-visible:ring-2 focus-visible:ring-ring"
+      className={wordClass}
     >
       {WORD}
 
@@ -102,16 +68,12 @@ function ReverseEngineer() {
         style={{ perspectiveOrigin: `${dx}px 0px` }}
         className="pointer-events-none absolute top-1/2 left-1/2 z-20 size-0 font-normal text-foreground perspective-[1500px]"
       >
-        {/* a soft spotlight: dims and blurs the text around the stack, fading out at its edges */}
-        <span
-          style={{
-            left: dx,
-            width: 720 * k,
-            height: 440 * k,
-            opacity: open ? 1 : 0,
-            transition: `opacity .45s ease ${open ? 0 : 0.15}s`,
-          }}
-          className="absolute top-0 block -translate-1/2 bg-background/85 mask-[radial-gradient(closest-side,#000_45%,rgb(0_0_0/0.6)_70%,transparent_100%)] backdrop-blur-[3px]"
+        <Spotlight
+          open={open}
+          width={720 * k}
+          height={440 * k}
+          x={dx}
+          closeDelay={0.15}
         />
 
         <span

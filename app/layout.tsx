@@ -49,7 +49,8 @@ export default function RootLayout({
     >
       {/* extensions such as ColorZilla add attributes to <body> before React loads */}
       <body suppressHydrationWarning>
-        <ThemeProvider>{children}</ThemeProvider>
+        {/* the dark theme stays in the code but is not used: the page is always light */}
+        <ThemeProvider forcedTheme="light">{children}</ThemeProvider>
       </body>
     </html>
   )
