@@ -14,9 +14,11 @@ function ScrollArea({
       className={cn("relative flex flex-col", className)}
       {...props}
     >
+      {/* relative, so absolutely placed children (an sr-only label, a heading's # link) stay inside the
+          scrolled content; anchored to the root instead, they stretch the document and add a second scrollbar */}
       <ScrollAreaPrimitive.Viewport
         data-slot="scroll-area-viewport"
-        className="min-h-0 min-w-0 w-full flex-1 rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1"
+        className="relative min-h-0 min-w-0 w-full flex-1 rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1"
       >
         <ScrollAreaPrimitive.Content>{children}</ScrollAreaPrimitive.Content>
       </ScrollAreaPrimitive.Viewport>

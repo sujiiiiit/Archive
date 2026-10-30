@@ -1,6 +1,7 @@
-import { Hero } from "@/components/hero/hero"
-import { Projects } from "@/components/projects/projects"
-import { SectionIndex } from "@/components/section-index"
+import { LatestPosts } from "@/components/home/latest-posts"
+import { Hero } from "@/components/home/hero/hero"
+import { Projects } from "@/components/home/projects"
+import { SectionIndex } from "@/components/home/section-index"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
 export default function Page() {
@@ -14,6 +15,7 @@ export default function Page() {
         <div className="flex w-full flex-col min-[700px]:w-fit">
           <Hero />
           <Projects />
+          <LatestPosts />
         </div>
       </main>
     </ScrollArea>
