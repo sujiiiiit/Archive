@@ -3,9 +3,9 @@
 import { useEffect, useRef, useState, type MouseEvent } from "react"
 import { useReducedMotion, type Transition } from "motion/react"
 
-// the look every word that opens shares: it reads as touchable, not as a link
+// the look every word that opens shares: it reads as touchable, and the hand says so
 const wordClass =
-  "relative inline-block cursor-default rounded-xs font-medium whitespace-nowrap text-foreground underline decoration-muted-foreground/50 decoration-dotted underline-offset-[5px] outline-none [-webkit-tap-highlight-color:transparent] focus-visible:ring-2 focus-visible:ring-ring"
+  "relative inline-block cursor-pointer rounded-xs font-medium whitespace-nowrap text-foreground underline decoration-muted-foreground/50 decoration-dotted underline-offset-[5px] outline-none [-webkit-tap-highlight-color:transparent] focus-visible:ring-2 focus-visible:ring-ring"
 
 // the little readouts the words show (a size, a timecode): shaped like the design system's tooltip
 const chipClass =

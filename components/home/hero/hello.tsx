@@ -2,7 +2,7 @@
 // the word's ascenders reach the italic's cap height, both in the same muted ink
 function Hello() {
   return (
-    <p className="mb-[0.3em] flex items-baseline text-[clamp(1rem,1.6vw,1.45rem)] leading-none text-muted-foreground">
+    <p className="mb-[0.65em] flex items-baseline text-[clamp(1.15rem,2vw,1.9rem)] leading-none text-muted-foreground">
       <svg
         aria-label="hello"
         role="img"

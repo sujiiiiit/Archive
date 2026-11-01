@@ -1,9 +1,10 @@
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import type { Metadata } from "next"
-import { Caveat, EB_Garamond, Inter, Newsreader } from "next/font/google"
+import { EB_Garamond, Inter, Newsreader, Zeyada } from "next/font/google"
 
 import "./globals.css"
+import { SmoothCursor } from "@/components/cursor/smooth-cursor"
 import { ThemeProvider } from "@/components/theme-provider"
 import { baseUrl, site } from "@/lib/site"
 import { cn } from "@/lib/utils"
@@ -60,9 +61,10 @@ const garamond = EB_Garamond({
 })
 
 // handwriting, only for the pencil notes scribbled beside things
-const caveat = Caveat({
+const zeyada = Zeyada({
   subsets: ["latin"],
-  variable: "--font-caveat",
+  weight: "400",
+  variable: "--font-zeyada",
 })
 
 export default function RootLayout({
@@ -79,7 +81,7 @@ export default function RootLayout({
         inter.variable,
         newsreader.variable,
         garamond.variable,
-        caveat.variable,
+        zeyada.variable,
         "font-sans"
       )}
     >
@@ -87,6 +89,7 @@ export default function RootLayout({
       <body suppressHydrationWarning>
         {/* the dark theme stays in the code but is not used: the page is always light */}
         <ThemeProvider forcedTheme="light">{children}</ThemeProvider>
+        <SmoothCursor />
         <Analytics />
         <SpeedInsights />
       </body>
