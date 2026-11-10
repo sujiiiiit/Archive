@@ -5,7 +5,7 @@ import Link from "next/link"
 
 import { ScrollArea } from "@/components/ui/scroll-area"
 
-// the frame every post and list page is read in: one column, and a way back at the end
+// the frame a standalone page is read in: one column, and a way back at the end
 function ReadingPage({
   back,
   children,

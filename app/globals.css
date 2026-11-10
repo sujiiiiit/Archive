@@ -92,16 +92,6 @@
   --sidebar-ring: oklch(0.708 0 0);
   /* a print's off-white border: a physical object, same in both themes */
   --paper: oklch(0.975 0.006 80);
-  /* code in story pages, highlighted by sugar-high: ink for keywords, greys for the rest */
-  --sh-keyword: oklch(0.145 0 0);
-  --sh-class: oklch(0.205 0 0);
-  --sh-entity: oklch(0.205 0 0);
-  --sh-property: oklch(0.371 0 0);
-  --sh-identifier: oklch(0.269 0 0);
-  --sh-string: oklch(0.48 0.06 150);
-  --sh-jsxliterals: oklch(0.371 0 0);
-  --sh-sign: oklch(0.556 0 0);
-  --sh-comment: oklch(0.708 0 0);
 }
 
 .dark {

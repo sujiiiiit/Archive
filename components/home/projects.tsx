@@ -17,7 +17,6 @@ import {
   StarIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react"
-import Link from "next/link"
 import {
   animate,
   AnimatePresence,
@@ -36,7 +35,6 @@ type Project = {
   name: string
   blurb: string
   icon: IconSvgElement
-  href: string
   repo?: { href: string; stars: number }
   stack: string[]
   status: string
@@ -49,7 +47,6 @@ const projects: Project[] = [
     name: "openscreen",
     blurb: "Screen recordings that look edited before you edit them.",
     icon: ComputerVideoIcon,
-    href: "/blog/openscreen",
     repo: { href: "#", stars: 128 },
     stack: ["Electron", "PixiJS", "WebCodecs"],
     status: "Paused",
@@ -59,7 +56,6 @@ const projects: Project[] = [
     name: "smooth-cursor",
     blurb: "Takes the shake out of a recorded cursor, without the lag.",
     icon: Cursor01Icon,
-    href: "/blog/smooth-cursor",
     repo: { href: "#", stars: 42 },
     stack: ["TypeScript", "Vitest"],
     status: "Beta",
@@ -255,7 +251,7 @@ function List({
   ))
 }
 
-// the whole row is the link; the GitHub count sits above it as its own link
+// the row is a display item; the GitHub count is its only link
 function ListRow({
   project: p,
   active,
@@ -282,12 +278,6 @@ function ListRow({
         transition={{ duration: 0.2 }}
         className="absolute inset-0 rounded-2xl bg-muted dark:bg-muted/60"
       />
-      <Link
-        href={p.href}
-        aria-label={`Read the post about ${p.name}`}
-        className="absolute inset-0 rounded-2xl outline-offset-2"
-      />
-
       <div className="pointer-events-none relative flex items-center gap-3 py-3">
         <Tile
           icon={p.icon}
@@ -301,13 +291,7 @@ function ListRow({
             <h3 className="truncate font-display text-lg leading-snug font-medium">
               {p.name}
             </h3>
-            {/* count and arrow move as one: at rest the arrow waits past the edge (gap + icon = 24px),
-                so the count ends on the column edge; on hover both slide in */}
-            <motion.div
-              initial={false}
-              animate={{ x: active ? 0 : 24 }}
-              className="ml-auto flex h-6 items-center gap-2"
-            >
+            <div className="ml-auto flex h-6 items-center gap-2">
               {p.repo && (
                 <a
                   href={p.repo.href}
@@ -318,15 +302,7 @@ function ListRow({
                   {p.repo.stars}
                 </a>
               )}
-              <motion.span
-                data-arrow
-                initial={false}
-                animate={{ opacity: active ? 1 : 0 }}
-                transition={{ duration: 0.15 }}
-              >
-                <HugeiconsIcon icon={ArrowUpRight01Icon} size={16} />
-              </motion.span>
-            </motion.div>
+            </div>
           </div>
           <p className="truncate font-text text-sm text-muted-foreground">
             {p.blurb}
@@ -377,11 +353,6 @@ function Grid() {
 
   return projects.map((p) => (
     <li key={p.name} className="relative" {...bind(p.name)}>
-      <Link
-        href={p.href}
-        aria-label={`Read the post about ${p.name}`}
-        className="absolute inset-0 z-10 rounded-xl outline-offset-4"
-      />
       <div className="flex items-center justify-between pb-2">
         <h3 className="font-display text-lg leading-snug font-medium">
           {p.name}
@@ -409,13 +380,6 @@ function Grid() {
           animate={{ scale: active === p.name ? 1.06 : 1 }}
           className="relative size-14 rounded-2xl"
         />
-        <motion.span
-          initial={false}
-          animate={{ opacity: active === p.name ? 1 : 0 }}
-          className="absolute top-2 right-2 rounded-full border bg-background/80 p-1.5 shadow-xs backdrop-blur-sm"
-        >
-          <HugeiconsIcon icon={ArrowUpRight01Icon} size={14} />
-        </motion.span>
       </div>
       <p className="pt-3 font-text text-[0.9375rem] leading-relaxed text-balance text-muted-foreground">
         {p.blurb}

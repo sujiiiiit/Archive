@@ -7,7 +7,6 @@ import { useReducedMotion } from "motion/react"
 const sections = [
   { id: "about", label: "about" },
   { id: "projects", label: "projects" },
-  { id: "blog", label: "blog" },
 ]
 
 // a magazine's contents down the right edge: the section you're reading is inked, the rest stay faint.

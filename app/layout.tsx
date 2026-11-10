@@ -9,15 +9,11 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { baseUrl, site } from "@/lib/site"
 import { cn } from "@/lib/utils"
 
-// the defaults every page starts from; posts fill in their own title and preview
+// the defaults every page starts from; pages fill in their own title and preview
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: { default: site.name, template: `%s · ${site.name}` },
   description: site.description,
-  // the feed readers find from the homepage; pages that set their own canonical replace this
-  alternates: {
-    types: { "application/rss+xml": [{ url: "/rss", title: site.name }] },
-  },
   openGraph: {
     title: site.name,
     description: site.description,

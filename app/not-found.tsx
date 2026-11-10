@@ -1,4 +1,4 @@
-import { ReadingPage } from "@/components/blog/reading-page"
+import { ReadingPage } from "@/components/layout/reading-page"
 
 export default function NotFound() {
   return (
