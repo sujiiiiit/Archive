@@ -126,15 +126,6 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
-  --sh-keyword: oklch(0.985 0 0);
-  --sh-class: oklch(0.922 0 0);
-  --sh-entity: oklch(0.922 0 0);
-  --sh-property: oklch(0.8 0 0);
-  --sh-identifier: oklch(0.87 0 0);
-  --sh-string: oklch(0.78 0.07 150);
-  --sh-jsxliterals: oklch(0.8 0 0);
-  --sh-sign: oklch(0.65 0 0);
-  --sh-comment: oklch(0.5 0 0);
 }
 
 @layer base {
