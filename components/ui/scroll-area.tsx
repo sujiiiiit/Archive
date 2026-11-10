@@ -18,9 +18,14 @@ function ScrollArea({
           scrolled content; anchored to the root instead, they stretch the document and add a second scrollbar */}
       <ScrollAreaPrimitive.Viewport
         data-slot="scroll-area-viewport"
-        className="relative min-h-0 min-w-0 w-full flex-1 rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1"
+        className="relative min-h-0 w-full min-w-0 flex-1 rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1"
       >
-        <ScrollAreaPrimitive.Content>{children}</ScrollAreaPrimitive.Content>
+        {/* Base UI sets an inline min-width: fit-content here, so the content grows to its widest
+            unbreakable line and a phone lays the page out wider than its screen. The page only scrolls
+            vertically, so the content is held to the viewport's width (! beats the inline style) */}
+        <ScrollAreaPrimitive.Content className="min-w-0!">
+          {children}
+        </ScrollAreaPrimitive.Content>
       </ScrollAreaPrimitive.Viewport>
       <ScrollBar />
       <ScrollAreaPrimitive.Corner />

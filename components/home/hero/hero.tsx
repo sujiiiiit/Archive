@@ -12,7 +12,8 @@ function Hero() {
     >
       {/* the print stays pinned to the wall while the column beside it scrolls from the intro into the projects;
           stacked on a phone, it simply scrolls away with the page */}
-      <div className="sticky top-0 flex h-svh flex-none items-center self-start max-[900px]:portrait:static max-[900px]:portrait:h-auto">
+      {/* self-start lets it stick beside the column; stacked, it's centred above it instead */}
+      <div className="sticky top-0 flex h-svh flex-none items-center self-start max-[900px]:portrait:static max-[900px]:portrait:h-auto max-[900px]:portrait:self-center">
         {/* a print on the wall, dimmed a touch in dark mode like a lamp-lit room */}
         {/* as tall as the screen minus the section's padding (3:4 print, so width = 88svh * 3/4), capped by the width on narrow screens */}
         {/* it fades in with the same fade the text streams in with */}
@@ -55,11 +56,12 @@ function Hero() {
       </div>
 
       {/* the column that changes, one full screen at a time: the intro, then the projects in its place */}
-      <div className="flex w-[38rem] max-w-full min-w-0 flex-col max-[900px]:portrait:w-full">
+      {/* stacked on a tablet it keeps its 38rem measure, centred under the print, rather than stretching edge to edge */}
+      <div className="flex w-[38rem] max-w-full min-w-0 flex-col max-[900px]:portrait:w-full max-[900px]:portrait:max-w-[38rem]">
         <HeroText />
         <div
           data-panel
-          className="flex h-svh items-center py-[6svh] max-[900px]:portrait:h-auto"
+          className="flex h-svh items-center py-[6svh] max-[900px]:portrait:h-auto short:h-auto"
         >
           <Projects />
         </div>

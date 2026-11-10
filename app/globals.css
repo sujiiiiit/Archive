@@ -3,6 +3,9 @@
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
+/* a phone held sideways (or any very short window): too short for a whole panel to fit one screen,
+   so the page scrolls freely there, like the stacked phone layout. Mirrors FREE in panel-pager.tsx */
+@custom-variant short (@media (max-height: 560px) and (orientation: landscape));
 
 @theme inline {
   --font-sans: var(--font-inter);
