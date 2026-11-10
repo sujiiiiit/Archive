@@ -3,8 +3,11 @@
 import { animate, type AnimationPlaybackControls } from "motion/react"
 import { useEffect } from "react"
 
-// a stacked phone layout scrolls freely; everywhere else the page moves a whole panel at a time
-const FREE = "(max-width: 900px) and (orientation: portrait)"
+// a stacked phone layout, and a screen too short for a panel (a phone held sideways), scroll freely;
+// everywhere else the page moves a whole panel at a time. The second query is the `short` variant
+// in globals.css
+const FREE =
+  "(max-width: 900px) and (orientation: portrait), (max-height: 560px) and (orientation: landscape)"
 
 // one swipe or one burst of wheel clicks moves one panel, however long the swipe is. A new gesture
 // is told apart from the one still running by a pause in the events, or, over a trackpad's fading

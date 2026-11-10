@@ -8,13 +8,10 @@ import {
   type FocusEvent,
 } from "react"
 import {
-  ComputerVideoIcon,
-  Cursor01Icon,
   FolderClosedIcon,
   GithubIcon,
   GridViewIcon,
   Menu01Icon,
-  StarIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react"
 import {
@@ -33,31 +30,31 @@ import { cn } from "@/lib/utils"
 type Project = {
   name: string
   blurb: string
-  icon: IconSvgElement
-  repo?: { href: string; stars: number }
+  // the GitHub repo; the whole card links here
+  href: string
+  // three short names at most: that's what the fan's stack card fits on one line each
   stack: string[]
   status: string
   year: number
 }
 
-// dummy content: swap in the real projects, no logos
 const projects: Project[] = [
   {
-    name: "openscreen",
-    blurb: "Screen recordings that look edited before you edit them.",
-    icon: ComputerVideoIcon,
-    repo: { href: "#", stars: 128 },
-    stack: ["Electron", "PixiJS", "WebCodecs"],
+    name: "OpenScreen",
+    blurb:
+      "A Mac screen recorder that edits for you: auto-zoom, smooth cursor, MP4.",
+    href: "https://github.com/sujiiiiit/openscreen",
+    stack: ["Obj-C++", "PixiJS", "WebCodecs"],
     status: "Paused",
     year: 2026,
   },
   {
-    name: "smooth-cursor",
-    blurb: "Takes the shake out of a recorded cursor, without the lag.",
-    icon: Cursor01Icon,
-    repo: { href: "#", stars: 42 },
-    stack: ["TypeScript", "Vitest"],
-    status: "Beta",
+    name: "OpenCode in Chrome",
+    blurb:
+      "An AI agent that uses your browser for you, and asks before anything risky.",
+    href: "https://github.com/sujiiiiit/opencode-in-chrome",
+    stack: ["Chrome MV3", "CDP", "MCP"],
+    status: "Active",
     year: 2026,
   },
 ]
@@ -99,7 +96,9 @@ function Projects() {
     <MotionConfig reducedMotion="user" transition={spring}>
       <section
         id="projects"
-        className="w-[min(100%,30rem,calc((88svh-290px)/1.05))]"
+        // paged, it's as wide as still lets both cards fit one screen's height; where the page
+        // scrolls freely (a stacked phone, a short landscape screen) the height doesn't matter
+        className="w-[min(100%,30rem,calc((88svh-290px)/1.05))] max-[900px]:portrait:w-full max-[900px]:portrait:max-w-[30rem] short:w-full short:max-w-[30rem]"
       >
         <motion.div {...fadeIn} className="flex items-center justify-between">
           <div className="flex flex-wrap items-center gap-x-1.5">
@@ -168,7 +167,9 @@ function ViewLayer({
       animate={{ opacity: shown ? 1 : 0 }}
       transition={{ duration: 0.2, ease: "easeInOut" }}
       inert={!shown}
-      className={cn("[grid-area:1/1]", !shown && "pointer-events-none")}
+      // min-w-0: a grid item is otherwise as wide as its longest unbroken line, so a one-line blurb
+      // would widen the whole section instead of truncating
+      className={cn("min-w-0 [grid-area:1/1]", !shown && "pointer-events-none")}
     >
       {children}
     </motion.div>
@@ -269,7 +270,7 @@ function List({
   ))
 }
 
-// the row is a display item; the GitHub count is its only link
+// the whole row links to the project's GitHub repo
 function ListRow({
   project: p,
   active,
@@ -296,72 +297,60 @@ function ListRow({
         transition={{ duration: 0.2 }}
         className="absolute inset-0 rounded-2xl bg-muted dark:bg-muted/60"
       />
-      <div className="pointer-events-none relative flex items-center gap-3 py-3">
-        <Tile
-          icon={p.icon}
-          initial={false}
-          animate={
-            active ? { scale: 1.06, rotate: -2 } : { scale: 1, rotate: 0 }
-          }
-        />
-        <div className="min-w-0 flex-1">
+      <a
+        href={p.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`${p.name} on GitHub`}
+        className="relative block rounded-2xl outline-none"
+      >
+        <div className="py-3">
           <div className="flex items-center gap-2">
             <h3 className="truncate font-display text-lg leading-snug font-medium">
               {p.name}
             </h3>
-            <div className="ml-auto flex h-6 items-center gap-2">
-              {p.repo && (
-                <a
-                  href={p.repo.href}
-                  aria-label={`${p.name} on GitHub`}
-                  className="pointer-events-auto flex items-center gap-1 rounded-sm font-text text-xs text-muted-foreground tabular-nums transition-colors hover:text-foreground"
-                >
-                  <HugeiconsIcon icon={GithubIcon} size={14} />
-                  {p.repo.stars}
-                </a>
-              )}
-            </div>
+            <GithubLabel active={active} className="ml-auto" />
           </div>
           <p className="truncate font-text text-sm text-muted-foreground">
             {p.blurb}
           </p>
         </div>
-      </div>
 
-      {/* the row opens into a fan of cards: two screens, the stack, where it stands */}
-      <motion.div
-        aria-hidden
-        initial={false}
-        animate={{ opacity: active ? 1 : 0 }}
-        style={{ height: fan }}
-        className="pointer-events-none relative overflow-hidden"
-      >
+        {/* the row opens into a fan of cards: two screens, the stack, where it stands and when */}
         <motion.div
+          aria-hidden
           initial={false}
-          animate={active ? "open" : "closed"}
-          variants={{ open: { transition: { staggerChildren: 0.04 } } }}
-          className="flex h-20 items-end justify-center mask-b-from-50% mask-b-to-98%"
+          animate={{ opacity: active ? 1 : 0 }}
+          style={{ height: fan }}
+          className="pointer-events-none relative overflow-hidden"
         >
-          <FanCard index={0}>
-            <Screen />
-          </FanCard>
-          <FanCard index={1} className="z-10">
-            <Screen grid />
-          </FanCard>
-          <FanCard
-            index={2}
-            className="py-2 pr-2 pl-3 font-text text-[11px] leading-relaxed text-muted-foreground"
+          <motion.div
+            initial={false}
+            animate={active ? "open" : "closed"}
+            variants={{ open: { transition: { staggerChildren: 0.04 } } }}
+            className="flex h-20 items-end justify-center mask-b-from-50% mask-b-to-98%"
           >
-            {p.stack.map((s) => (
-              <div key={s}>{s}</div>
-            ))}
-          </FanCard>
-          <FanCard index={3} className="p-2 font-display">
-            <div className="text-sm font-medium">{p.status}</div>
-            <div className="text-xs text-muted-foreground">{p.year}</div>
-          </FanCard>
+            <FanCard index={0}>
+              <Screen />
+            </FanCard>
+            <FanCard index={1} className="z-10">
+              <Screen grid />
+            </FanCard>
+            <FanCard
+              index={2}
+              className="py-2 pr-2 pl-3 font-text text-[11px] leading-relaxed text-muted-foreground"
+            >
+              {p.stack.map((s) => (
+                <div key={s}>{s}</div>
+              ))}
+            </FanCard>
+            <FanCard index={3} className="p-2 font-display">
+              <div className="text-sm font-medium">{p.status}</div>
+              <div className="text-xs text-muted-foreground">{p.year}</div>
+            </FanCard>
+          </motion.div>
         </motion.div>
-      </motion.div>
+      </a>
     </li>
   )
 }
@@ -380,8 +369,8 @@ function Grid() {
   ))
 }
 
-// parallax in two depths: the lower card drifts a little faster than the upper one as the panel
-// glides in, and inside each frame the window and the icon slide against each other
+// the lower card drifts a little faster than the upper one as the panel glides in, and the window
+// inside each frame slides against it. The whole card links to the project's GitHub repo
 function GridCard({
   project: p,
   index,
@@ -399,7 +388,6 @@ function GridCard({
   const drift = (index % 2 ? 28 : 12) * depth
   const cardY = useTransform(progress, [0, 1], [drift, -drift])
   const screenY = useTransform(progress, [0, 1], [18 * depth, -18 * depth])
-  const tileY = useTransform(progress, [0, 1], [-10 * depth, 10 * depth])
 
   return (
     <motion.li
@@ -409,73 +397,63 @@ function GridCard({
       className="relative will-change-transform"
       {...props}
     >
-      <div className="flex items-center justify-between pb-2">
-        <h3 className="font-display text-lg leading-snug font-medium">
-          {p.name}
-        </h3>
-        {p.repo && (
-          <span className="flex items-center gap-1 font-text text-xs text-muted-foreground tabular-nums">
-            <HugeiconsIcon icon={StarIcon} size={12} className="fill-current" />
-            {p.repo.stars}
-          </span>
-        )}
-      </div>
-      {/* a window peeking up from the bottom, soft-focused so the icon reads first; it rises on hover.
-          No shadow under the blur: blurring a shadow is very slow to paint and barely shows */}
-      <div className="relative grid aspect-1200/630 place-items-center overflow-hidden rounded-xl border bg-muted dark:bg-muted/50">
-        {/* the scroll moves this layer; the window inside it still rises on hover */}
-        <motion.div
-          style={{ y: screenY }}
-          className="absolute inset-0 will-change-transform"
-        >
+      <a
+        href={p.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`${p.name} on GitHub`}
+        className="block rounded-xl outline-none"
+      >
+        <div className="flex items-center justify-between pb-2">
+          <h3 className="font-display text-lg leading-snug font-medium">
+            {p.name}
+          </h3>
+          <GithubLabel active={active} />
+        </div>
+        {/* a window peeking up from the bottom; it rises on hover */}
+        <div className="relative aspect-1200/630 overflow-hidden rounded-xl border bg-muted dark:bg-muted/50">
+          {/* the scroll moves this layer; the window inside it still rises on hover */}
           <motion.div
-            initial={false}
-            animate={{ y: active ? "-4%" : "0%" }}
-            className="absolute inset-x-[8%] top-[12%] bottom-[-14%] overflow-hidden rounded-t-xl border blur-[3px]"
+            style={{ y: screenY }}
+            className="absolute inset-0 will-change-transform"
           >
-            <Screen />
+            <motion.div
+              initial={false}
+              animate={{ y: active ? "-4%" : "0%" }}
+              className="absolute inset-x-[8%] top-[12%] bottom-[-14%] overflow-hidden rounded-t-xl border"
+            >
+              <Screen />
+            </motion.div>
           </motion.div>
-        </motion.div>
-        <motion.div
-          style={{ y: tileY }}
-          className="relative will-change-transform"
-        >
-          <Tile
-            icon={p.icon}
-            size={26}
-            initial={false}
-            animate={{ scale: active ? 1.06 : 1 }}
-            className="size-14 rounded-2xl"
-          />
-        </motion.div>
-      </div>
-      <p className="pt-3 font-text text-[0.9375rem] leading-relaxed text-balance text-muted-foreground">
-        {p.blurb}
-      </p>
+        </div>
+        <p className="pt-3 font-text text-[0.9375rem] leading-relaxed text-balance text-muted-foreground">
+          {p.blurb}
+        </p>
+      </a>
     </motion.li>
   )
 }
 
-function Tile({
-  icon,
-  size = 20,
+// "GitHub" with its mark, beside a project's name; it brightens while the card is hovered or focused
+function GithubLabel({
+  active,
   className,
-  ...props
-}: ComponentProps<typeof motion.div> & {
-  icon: IconSvgElement
-  size?: number
+}: {
+  active: boolean
+  className?: string
 }) {
   return (
-    <motion.div
-      data-tile
+    <span
+      aria-hidden
       className={cn(
-        "grid size-10 shrink-0 place-items-center rounded-xl border bg-card text-foreground/80 shadow-xs",
+        "flex items-center gap-1 font-text text-xs text-muted-foreground transition-colors duration-200",
+        active && "text-foreground",
         className
       )}
-      {...props}
     >
-      <HugeiconsIcon icon={icon} size={size} strokeWidth={1.5} />
-    </motion.div>
+      <HugeiconsIcon icon={GithubIcon} size={14} />
+      GitHub
+    </span>
   )
 }
 
