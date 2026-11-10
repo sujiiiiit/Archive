@@ -163,9 +163,16 @@ function SmoothCursor() {
           prev.enter = undefined
           prev.leave = prev.img.animate(
             [from, { opacity: 0, transform: "scale(0.8)", filter: blur }],
-            { duration: 140, easing: "cubic-bezier(.4,0,1,1)", fill: "forwards" }
+            {
+              duration: 140,
+              easing: "cubic-bezier(.4,0,1,1)",
+              fill: "forwards",
+            }
           )
-          prev.leave.finished.then(() => drop(prev), () => {})
+          prev.leave.finished.then(
+            () => drop(prev),
+            () => {}
+          )
         }
       }
 
@@ -202,7 +209,9 @@ function SmoothCursor() {
         drawn = transform
       }
       for (const layer of live) {
-        const t = on ? turn(motion.x, motion.y, layer.art.heading, s.tiltMax) : 0
+        const t = on
+          ? turn(motion.x, motion.y, layer.art.heading, s.tiltMax)
+          : 0
         if (Math.abs(t - layer.turn) < 0.01) continue
         layer.turn = t
         layer.img.style.rotate = `${t.toFixed(2)}deg`
@@ -225,8 +234,20 @@ function SmoothCursor() {
 
       const px = pos.x
       const py = pos.y
-      ;[pos.x, pos.vx] = smoothDamp(pos.x, target.x, pos.vx, still ? 0 : s.smoothing, dt)
-      ;[pos.y, pos.vy] = smoothDamp(pos.y, target.y, pos.vy, still ? 0 : s.smoothing, dt)
+      ;[pos.x, pos.vx] = smoothDamp(
+        pos.x,
+        target.x,
+        pos.vx,
+        still ? 0 : s.smoothing,
+        dt
+      )
+      ;[pos.y, pos.vy] = smoothDamp(
+        pos.y,
+        target.y,
+        pos.vy,
+        still ? 0 : s.smoothing,
+        dt
+      )
 
       // measured from what's drawn, so it works with smoothing off too
       const vx = dt > 0 ? (pos.x - px) / dt : 0
@@ -236,7 +257,13 @@ function SmoothCursor() {
 
       // a quick press down, a slightly slower release
       const pressGoal = press.down ? s.clickScale : 1
-      ;[press.scale, press.v] = smoothDamp(press.scale, pressGoal, press.v, still ? 0 : press.down ? 0.06 : 0.1, dt)
+      ;[press.scale, press.v] = smoothDamp(
+        press.scale,
+        pressGoal,
+        press.v,
+        still ? 0 : press.down ? 0.06 : 0.1,
+        dt
+      )
 
       draw(s)
 
@@ -292,11 +319,17 @@ function SmoothCursor() {
       look()
       wake()
     }
-    // the page can scroll under a still cursor, so what it's over can change
+    // the page can scroll under a still cursor, so what it's over can change. Looked up once the
+    // scrolling settles rather than every frame of it: each lookup forces a layout, and mid-glide
+    // that layout is dirty every frame, so checking as it moves made the glide stutter
+    let settle = 0
     const onScroll = () => {
       if (!shown) return
-      rescan = true
-      wake()
+      clearTimeout(settle)
+      settle = window.setTimeout(() => {
+        rescan = true
+        wake()
+      }, 80)
     }
     const onLeave = (e: MouseEvent) => {
       if (!e.relatedTarget) setShown(false)
@@ -305,7 +338,9 @@ function SmoothCursor() {
     show("default")
     // the hand fetched and decoded ahead, so the first switch isn't waiting on the network or the decoder
     const idle = (window.requestIdleCallback ?? setTimeout)(() =>
-      layerFor("pointer").img.decode().catch(() => {})
+      layerFor("pointer")
+        .img.decode()
+        .catch(() => {})
     )
 
     addEventListener("pointermove", onMove, { passive: true })
@@ -317,6 +352,7 @@ function SmoothCursor() {
 
     return () => {
       cancelAnimationFrame(frame)
+      clearTimeout(settle)
       ;(window.cancelIdleCallback ?? clearTimeout)(idle)
       html.classList.remove("custom-cursor")
       made.forEach((l) => {

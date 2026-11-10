@@ -1,7 +1,7 @@
 import { Hero } from "@/components/home/hero/hero"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
-// one screen: the hero fills it on desktop, and on a phone, where it stacks taller, the page scrolls
+// the print stays put on the left; the column beside it scrolls from the intro into the projects
 export default function Page() {
   return (
     // the page scrolls inside this, so the scrollbar is drawn from theme colours in every browser

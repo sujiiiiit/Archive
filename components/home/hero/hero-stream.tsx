@@ -2,160 +2,154 @@
 
 import { ArrowDown02Icon, ArrowUpRight01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { AnimatedMarkdown } from "flowtoken"
-import "flowtoken/dist/styles.css"
 import { useReducedMotion } from "motion/react"
-import { useEffect, useState, type ReactNode } from "react"
+import type { CSSProperties, ReactNode } from "react"
 
 import { DesignWord } from "@/components/home/hero/design-word"
 import { EngineeringWord } from "@/components/home/hero/engineering-word"
 import { Hello } from "@/components/home/hero/hello"
-import { wordClass } from "@/components/home/hero/reveal"
 import { ReverseEngineer } from "@/components/home/hero/reverse-engineer"
+import { goToPanel } from "@/components/home/panel-pager"
 import { buttonVariants } from "@/components/ui/button"
+import { AnimatedDoodle, DOODLE_NAMES } from "@/components/ui/doodle/doodle"
 import { cn } from "@/lib/utils"
 
-// the intro as markdown, so it can arrive the way an answer from a model does;
-// the words that open are custom tags, rendered as their components
-const INTRO = `# Sujit Dwivedi
+// the intro, block by block. Plain text streams in a word at a time; a word that opens (a
+// component) and the italic run each arrive as one token, so neither ever shows half-written
+type Part = string | { node: ReactNode } | { em: string }
+type Block = { tag: "h1" | "p"; parts: Part[] }
 
-When asked what I do, I say software engineer. But there’s more: I bring <designword></designword> and <engineeringword></engineeringword> together.
+const INTRO: Block[] = [
+  { tag: "h1", parts: ["Sujit Dwivedi"] },
+  {
+    tag: "p",
+    parts: [
+      "When asked what I do, I say software engineer. But there’s more: I bring ",
+      { node: <DesignWord /> },
+      " and ",
+      { node: <EngineeringWord /> },
+      " together.",
+    ],
+  },
+  {
+    tag: "p",
+    parts: [
+      "I observe, overthink, plan, design, build, test, ship, break things, debug, fix them… and most of what I know came from the things I ",
+      { node: <ReverseEngineer /> },
+      " and rebuild from scratch.",
+    ],
+  },
+  { tag: "p", parts: ["I’m a ", { em: "Creative Developer." }] },
+]
 
-I observe, overthink, plan, design, build, test, ship, break things, debug, fix them… and most of what I know came from the things I <reverseengineer></reverseengineer> and rebuild from scratch.
-
-I’m a *Creative Developer.*`
-
-// a token is a word with the space after it; a custom tag and the italic run each count as one,
-// so a half-written tag or a lone asterisk never shows
-const TOKENS = INTRO.match(/(<(\w+)><\/\2>|\*[^*]+\*|\S+)\s*/g) ?? []
-
-// the streaming settings: 200 tokens a second, each fading in over 0.6s
+// the streaming pace: 200 tokens a second, each fading in over 0.6s (see .stream-token)
 const SPEED = 200
-const FADE = { animation: "fadeIn", duration: "0.6s", timing: "ease-in-out" }
-const fade = {
-  animation: `ft-fadeIn ${FADE.duration} ${FADE.timing}`,
-} as const
+const FADE_S = 0.6
 
-// animateText always hands back an array: the node wrapped in a fading span while streaming, bare once settled
-type Rendered = {
-  animateText: (node: ReactNode) => ReactNode[]
-  children?: ReactNode
-}
-
-// the same type as the hero had before; the last paragraph (the one with the italic) is the one in full ink
-const text = {
-  h1: ({ animateText, children }: Rendered) => (
-    <h1 className="mb-[1.2svh] font-display text-[clamp(1.9rem,3.6vw,3.4rem)] leading-[1.1] font-medium tracking-[-0.02em] whitespace-nowrap text-foreground">
-      {animateText(children)}
-    </h1>
+// every token numbered in reading order, worked out once: its number is its place in the stream
+type Token = { part: Exclude<Part, string> | string; at: number }
+let count = 0
+const BLOCKS = INTRO.map(({ tag, parts }) => ({
+  tag,
+  tokens: parts.flatMap((part): Token[] =>
+    typeof part === "string"
+      ? (part.match(/\s*\S+\s*/g) ?? []).map((word) => ({
+          part: word,
+          at: count++,
+        }))
+      : [{ part, at: count++ }]
   ),
-  p: ({ animateText, children }: Rendered) => (
-    <p className="mt-[1.1em] has-[em]:text-foreground [h1+&]:mt-0">
-      {animateText(children)}
-    </p>
-  ),
-  em: ({ animateText, children }: Rendered) => (
-    <em className="font-accent text-[1.67em]">{animateText(children)}</em>
-  ),
+}))
+// when the last word has finished fading in
+const STREAM_END = count / SPEED + FADE_S
+
+const delay = (seconds: number): CSSProperties => ({
+  animationDelay: `${seconds.toFixed(3)}s`,
+})
+// the same fade, for the pieces around the text, starting at a given moment
+const fadeAt = (seconds: number): CSSProperties => ({
+  animation: `ft-fadeIn ${FADE_S}s ease-in-out ${seconds.toFixed(3)}s both`,
+})
+
+function TokenSpan({ token }: { token: Token }) {
+  const { part } = token
+  return (
+    <span className="stream-token" style={delay(token.at / SPEED)}>
+      {typeof part === "string" ? (
+        part
+      ) : "em" in part ? (
+        <em className="font-accent text-[1.67em]">{part.em}</em>
+      ) : (
+        part.node
+      )}
+    </span>
+  )
 }
 
-// kept at module level: flowtoken rebuilds its renderers when this object changes, which would remount the words
-const live = {
-  ...text,
-  designword: ({ animateText }: Rendered) => animateText(<DesignWord />)[0],
-  engineeringword: ({ animateText }: Rendered) =>
-    animateText(<EngineeringWord />)[0],
-  reverseengineer: ({ animateText }: Rendered) =>
-    animateText(<ReverseEngineer />)[0],
+// every doodle, sketched in a loose row under the buttons like margin doodles in a notebook:
+// each tilted a little its own way, fading in one after another once the answer is through
+const TILTS = [-8, 5, -3, 9, -6, 4, -10, 7, -4, 6]
+
+function DoodleStrip() {
+  return (
+    <div
+      aria-hidden
+      className="mt-[4svh] flex h-7 items-center gap-[clamp(10px,1.4vw,18px)] text-muted-foreground"
+    >
+      {DOODLE_NAMES.map((name, i) => (
+        <span
+          key={name}
+          style={{
+            ...fadeAt(STREAM_END + i * 0.08),
+            rotate: `${TILTS[i % TILTS.length]}deg`,
+          }}
+          className="inline-flex motion-reduce:animate-none"
+        >
+          <AnimatedDoodle name={name} size={24} />
+        </span>
+      ))}
+    </div>
+  )
 }
 
-// the finished text, laid out but unseen, so the column has its final height from the first frame
-// and the streaming text never pushes the centred hero around
-const ghost = {
-  ...text,
-  designword: () => <span className={wordClass}>design</span>,
-  engineeringword: () => <span className={wordClass}>functionality</span>,
-  reverseengineer: () => <span className={wordClass}>reverse-engineer</span>,
-}
-
-// flowtoken sets each token inline-block, which breaks lines in other places than the finished text does;
-// as plain inline spans they wrap exactly like the settled paragraph, so nothing reflows when it lands
-const markdown =
-  "font-text text-[clamp(1rem,1.4vw,1.3rem)] leading-[1.7] text-pretty text-foreground/75 [&_span[style*=pre-wrap]]:inline! [&_span[style*=pre-wrap]]:whitespace-normal!"
-
+// the same type as the hero had before; the last paragraph (the one with the italic) is in full ink
 function HeroStream() {
   const reduce = useReducedMotion()
-  const [streamed, setCount] = useState(0)
-  // once the last tokens have faded in, the spans are dropped for plain text (flowtoken's advice for finished messages)
-  const [faded, setSettled] = useState(false)
-  // with reduced motion the whole text is there at once, already settled
-  const count = reduce ? TOKENS.length : streamed
-  const settled = reduce || faded
-  const done = count >= TOKENS.length
-
-  useEffect(() => {
-    if (reduce) return
-    let frame = 0
-    const start = performance.now()
-    const step = (now: number) => {
-      const next = Math.min(
-        TOKENS.length,
-        Math.floor(((now - start) / 1000) * SPEED)
-      )
-      setCount(next)
-      if (next < TOKENS.length) frame = requestAnimationFrame(step)
-    }
-    frame = requestAnimationFrame(step)
-    return () => cancelAnimationFrame(frame)
-  }, [reduce])
-
-  useEffect(() => {
-    if (!done || settled) return
-    const timer = setTimeout(
-      () => setSettled(true),
-      parseFloat(FADE.duration) * 1000
-    )
-    return () => clearTimeout(timer)
-  }, [done, settled])
 
   return (
     <div className="max-w-[38rem] min-w-0 flex-1 max-[900px]:portrait:w-full max-[900px]:portrait:flex-none">
-      <div style={fade}>
+      <div style={fadeAt(0)} className="motion-reduce:animate-none">
         <Hello />
       </div>
 
-      <div className="grid" aria-busy={!settled}>
-        {!settled && (
-          <div
-            aria-hidden
-            className={cn(markdown, "invisible [grid-area:1/1]")}
-          >
-            <AnimatedMarkdown
-              content={INTRO}
-              animation={null}
-              customComponents={ghost}
-            />
-          </div>
+      <div className="font-text text-[clamp(1rem,1.4vw,1.3rem)] leading-[1.7] text-pretty text-foreground/75">
+        {BLOCKS.map(({ tag, tokens }, i) =>
+          tag === "h1" ? (
+            <h1
+              key={i}
+              className="mb-[1.2svh] font-display text-[clamp(1.9rem,3.6vw,3.4rem)] leading-[1.1] font-medium tracking-[-0.02em] whitespace-nowrap text-foreground"
+            >
+              {tokens.map((t) => (
+                <TokenSpan key={t.at} token={t} />
+              ))}
+            </h1>
+          ) : (
+            <p
+              key={i}
+              className="mt-[1.1em] has-[em]:text-foreground [h1+&]:mt-0"
+            >
+              {tokens.map((t) => (
+                <TokenSpan key={t.at} token={t} />
+              ))}
+            </p>
+          )
         )}
-        <div className={cn(markdown, "[grid-area:1/1]")}>
-          <AnimatedMarkdown
-            content={TOKENS.slice(0, count).join("")}
-            sep="diff"
-            animation={settled ? null : FADE.animation}
-            animationDuration={FADE.duration}
-            animationTimingFunction={FADE.timing}
-            customComponents={live}
-          />
-        </div>
       </div>
 
       {/* the buttons come in as the answer's last line, once the text is through */}
       <div
-        style={done ? fade : undefined}
-        className={cn(
-          "mt-[4svh] flex flex-wrap gap-3 font-text",
-          !done && "invisible"
-        )}
+        style={fadeAt(count / SPEED)}
+        className="mt-[4svh] flex flex-wrap gap-3 font-text motion-reduce:animate-none"
       >
         <a
           href="/resume.pdf"
@@ -168,12 +162,26 @@ function HeroStream() {
         </a>
         <a
           href="#projects"
+          onClick={(e) => {
+            // the pager glides to the whole projects panel; on a phone, where the page scrolls
+            // freely, it's a plain smooth scroll inside the scroll area
+            const target = document.getElementById("projects")
+            if (!target) return
+            e.preventDefault()
+            if (goToPanel(target)) return
+            target.scrollIntoView({
+              behavior: reduce ? "auto" : "smooth",
+              block: "start",
+            })
+          }}
           className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
         >
           See projects
           <HugeiconsIcon icon={ArrowDown02Icon} data-icon="inline-end" />
         </a>
       </div>
+
+      <DoodleStrip />
     </div>
   )
 }

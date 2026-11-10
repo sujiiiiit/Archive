@@ -2,12 +2,12 @@
 
 import {
   useEffect,
+  useRef,
   useState,
   type ComponentProps,
   type FocusEvent,
 } from "react"
 import {
-  ArrowUpRight01Icon,
   ComputerVideoIcon,
   Cursor01Icon,
   FolderClosedIcon,
@@ -19,7 +19,6 @@ import {
 import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react"
 import {
   animate,
-  AnimatePresence,
   MotionConfig,
   motion,
   motionValue,
@@ -28,7 +27,7 @@ import {
   type MotionValue,
 } from "motion/react"
 
-import { buttonVariants } from "@/components/ui/button"
+import { useViewportProgress } from "@/components/home/use-viewport-progress"
 import { cn } from "@/lib/utils"
 
 type Project = {
@@ -66,6 +65,16 @@ const projects: Project[] = [
 // no bounce: things settle, they never wobble past where they land
 const spring = { type: "spring", duration: 0.45, bounce: 0 } as const
 
+// the same fade the hero's text streams in with (0.6s ease-in-out), opacity only
+const fadeIn = {
+  // from 1%, not 0: invisible on the paper, but the browser still paints it ahead of time. From a
+  // true 0 it skips the painting until the fade starts, which landed mid-glide and stuttered it
+  initial: { opacity: 0.01 },
+  whileInView: { opacity: 1 },
+  viewport: { once: true, amount: 0.25 },
+  transition: { duration: 0.6, ease: "easeInOut" },
+} as const
+
 // an open row's fan of cards, matching its h-20
 const fanHeight = 80
 
@@ -88,8 +97,11 @@ function Projects() {
 
   return (
     <MotionConfig reducedMotion="user" transition={spring}>
-      <section id="projects" className="mt-24 w-0 min-w-full scroll-mt-[6svh]">
-        <div className="flex items-center justify-between">
+      <section
+        id="projects"
+        className="w-[min(100%,30rem,calc((88svh-290px)/1.05))]"
+      >
+        <motion.div {...fadeIn} className="flex items-center justify-between">
           <div className="flex flex-wrap items-center gap-x-1.5">
             {/* the icon a touch taller than the text (17 to 15), so it reads as the same size beside the letters */}
             <h2 className="flex items-center gap-1.5 font-sans text-[15px] text-muted-foreground">
@@ -117,43 +129,49 @@ function Projects() {
               onClick={() => setView("grid")}
             />
           </div>
-        </div>
+        </motion.div>
 
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.ul
-            key={view}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4 }}
-            transition={{ duration: 0.2 }}
-            className={view === "list" ? "mt-3" : "mt-5 flex flex-col gap-10"}
-          >
-            {view === "list" ? (
-              <List active={active} bind={bind} fans={fans} />
-            ) : (
+        {/* both views stay laid out in the same cell, so the block is always as tall as the taller one
+            and switching never moves the heading or anything around it: the two only cross-fade */}
+        <div className="grid">
+          <ViewLayer shown={view === "grid"}>
+            <ul className="mt-5 flex flex-col gap-8">
               <Grid />
-            )}
-          </motion.ul>
-        </AnimatePresence>
-
-        <a
-          href="https://github.com/sujiiiiit"
-          target="_blank"
-          rel="noopener noreferrer"
-          className={cn(
-            buttonVariants({ variant: "outline", size: "sm" }),
-            "mx-auto mt-6 flex w-fit font-text"
-          )}
-        >
-          See more
-          <HugeiconsIcon icon={ArrowUpRight01Icon} data-icon="inline-end" />
-        </a>
-
-        {/* gives back exactly what the open fans take, frame by frame, so hovering never changes the
-            page's height: a page that shrinks while scrolled to the bottom snaps back up */}
-        <motion.div aria-hidden style={{ height: reserve }} />
+            </ul>
+          </ViewLayer>
+          <ViewLayer shown={view === "list"}>
+            <ul className="mt-3">
+              <List active={active} bind={bind} fans={fans} />
+            </ul>
+            {/* gives back exactly what the open fans take, frame by frame, so hovering a row never
+                changes the list's height */}
+            <motion.div aria-hidden style={{ height: reserve }} />
+          </ViewLayer>
+        </div>
       </section>
     </MotionConfig>
+  )
+}
+
+// one of the two views, stacked in the same grid cell as the other; the hidden one fades out and
+// is inert, so it can't be hovered, focused or read out while it's invisible
+function ViewLayer({
+  shown,
+  children,
+}: {
+  shown: boolean
+  children: React.ReactNode
+}) {
+  return (
+    <motion.div
+      initial={false}
+      animate={{ opacity: shown ? 1 : 0 }}
+      transition={{ duration: 0.2, ease: "easeInOut" }}
+      inert={!shown}
+      className={cn("[grid-area:1/1]", !shown && "pointer-events-none")}
+    >
+      {children}
+    </motion.div>
   )
 }
 
@@ -351,8 +369,46 @@ function ListRow({
 function Grid() {
   const [active, bind] = useActive<string>()
 
-  return projects.map((p) => (
-    <li key={p.name} className="relative" {...bind(p.name)}>
+  return projects.map((p, i) => (
+    <GridCard
+      key={p.name}
+      project={p}
+      index={i}
+      active={active === p.name}
+      {...bind(p.name)}
+    />
+  ))
+}
+
+// parallax in two depths: the lower card drifts a little faster than the upper one as the panel
+// glides in, and inside each frame the window and the icon slide against each other
+function GridCard({
+  project: p,
+  index,
+  active,
+  ...props
+}: ComponentProps<typeof motion.li> & {
+  project: Project
+  index: number
+  active: boolean
+}) {
+  const ref = useRef<HTMLLIElement>(null)
+  const reduce = useReducedMotion()
+  const progress = useViewportProgress(ref)
+  const depth = reduce ? 0 : 1
+  const drift = (index % 2 ? 28 : 12) * depth
+  const cardY = useTransform(progress, [0, 1], [drift, -drift])
+  const screenY = useTransform(progress, [0, 1], [18 * depth, -18 * depth])
+  const tileY = useTransform(progress, [0, 1], [-10 * depth, 10 * depth])
+
+  return (
+    <motion.li
+      ref={ref}
+      {...fadeIn}
+      style={{ y: cardY }}
+      className="relative will-change-transform"
+      {...props}
+    >
       <div className="flex items-center justify-between pb-2">
         <h3 className="font-display text-lg leading-snug font-medium">
           {p.name}
@@ -364,28 +420,40 @@ function Grid() {
           </span>
         )}
       </div>
-      {/* a window peeking up from the bottom, soft-focused so the icon reads first; it rises on hover */}
+      {/* a window peeking up from the bottom, soft-focused so the icon reads first; it rises on hover.
+          No shadow under the blur: blurring a shadow is very slow to paint and barely shows */}
       <div className="relative grid aspect-1200/630 place-items-center overflow-hidden rounded-xl border bg-muted dark:bg-muted/50">
-  <motion.div
-          initial={false}
-          animate={{ y: active === p.name ? "-4%" : "0%" }}
-          className="absolute inset-x-[8%] top-[12%] bottom-[-4%] overflow-hidden rounded-t-xl border shadow-sm blur-[3px]"
+        {/* the scroll moves this layer; the window inside it still rises on hover */}
+        <motion.div
+          style={{ y: screenY }}
+          className="absolute inset-0 will-change-transform"
         >
-          <Screen />
+          <motion.div
+            initial={false}
+            animate={{ y: active ? "-4%" : "0%" }}
+            className="absolute inset-x-[8%] top-[12%] bottom-[-14%] overflow-hidden rounded-t-xl border blur-[3px]"
+          >
+            <Screen />
+          </motion.div>
         </motion.div>
-        <Tile
-          icon={p.icon}
-          size={26}
-          initial={false}
-          animate={{ scale: active === p.name ? 1.06 : 1 }}
-          className="relative size-14 rounded-2xl"
-        />
+        <motion.div
+          style={{ y: tileY }}
+          className="relative will-change-transform"
+        >
+          <Tile
+            icon={p.icon}
+            size={26}
+            initial={false}
+            animate={{ scale: active ? 1.06 : 1 }}
+            className="size-14 rounded-2xl"
+          />
+        </motion.div>
       </div>
       <p className="pt-3 font-text text-[0.9375rem] leading-relaxed text-balance text-muted-foreground">
         {p.blurb}
       </p>
-    </li>
-  ))
+    </motion.li>
+  )
 }
 
 function Tile({

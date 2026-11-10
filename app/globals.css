@@ -11,7 +11,8 @@
   --font-accent: var(--font-eb-garamond), Georgia, serif;
   --font-hand: var(--font-zeyada), cursive;
   /* Inter everywhere text is read: Helvetica falls back to Arial on Windows, which reads cramped */
-  --font-text: var(--font-inter), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-text:
+    var(--font-inter), "Helvetica Neue", Helvetica, Arial, sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -134,6 +135,28 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* the one fade everything on the page appears with: opacity only, nothing moves */
+@keyframes ft-fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* the intro streams in like an answer from a model, a word at a time, entirely in CSS: every word
+   is laid out from the first frame and fades in on its own delay, so it needs no script to start
+   and never re-renders anything */
+.stream-token {
+  animation: ft-fadeIn 0.6s ease-in-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .stream-token {
+    animation: none;
   }
 }
 
