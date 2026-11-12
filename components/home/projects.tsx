@@ -8,6 +8,7 @@ import {
   type FocusEvent,
 } from "react"
 import {
+  ArrowExpandIcon,
   FolderClosedIcon,
   GithubIcon,
   GridViewIcon,
@@ -36,6 +37,10 @@ type Project = {
   stack: string[]
   status: string
   year: number
+  // a small autoplaying preview, and the full-resolution recording it opens in a new tab
+  video?: { preview: string; poster: string; full: string }
+  // or a still: a small copy for the card, and the original it opens
+  image?: { src: string; full: string }
 }
 
 const projects: Project[] = [
@@ -47,15 +52,24 @@ const projects: Project[] = [
     stack: ["Obj-C++", "PixiJS", "WebCodecs"],
     status: "Paused",
     year: 2026,
+    image: {
+      src: "/projects/openscreen.webp",
+      full: "/projects/openscreen.png",
+    },
   },
   {
     name: "OpenCode in Chrome",
     blurb:
-      "An AI agent that uses your browser for you, and asks before anything risky.",
+      "A Chrome extension that lets an AI agent use your own browser, with your sign-ins, to get things done for you.",
     href: "https://github.com/sujiiiiit/opencode-in-chrome",
     stack: ["Chrome MV3", "CDP", "MCP"],
     status: "Active",
     year: 2026,
+    video: {
+      preview: "/projects/opencode-in-chrome-preview.webm",
+      poster: "/projects/opencode-in-chrome-poster.jpg",
+      full: "/projects/opencode-in-chrome.mp4",
+    },
   },
 ]
 
@@ -98,7 +112,7 @@ function Projects() {
         id="projects"
         // paged, it's as wide as still lets both cards fit one screen's height; where the page
         // scrolls freely (a stacked phone, a short landscape screen) the height doesn't matter
-        className="w-[min(100%,30rem,calc((88svh-290px)/1.05))] max-[900px]:portrait:w-full max-[900px]:portrait:max-w-[30rem] short:w-full short:max-w-[30rem]"
+        className="w-[min(100%,30rem,calc((88svh-290px)/1.18))] max-[900px]:portrait:w-full max-[900px]:portrait:max-w-[30rem] short:w-full short:max-w-[30rem]"
       >
         <motion.div {...fadeIn} className="flex items-center justify-between">
           <div className="flex flex-wrap items-center gap-x-1.5">
@@ -384,7 +398,8 @@ function GridCard({
   const ref = useRef<HTMLLIElement>(null)
   const reduce = useReducedMotion()
   const progress = useViewportProgress(ref)
-  const depth = reduce ? 0 : 1
+  // a playing video stays put: moving it with the scroll re-composites every frame and it stutters
+  const depth = reduce || p.video || p.image ? 0 : 1
   const drift = (index % 2 ? 28 : 12) * depth
   const cardY = useTransform(progress, [0, 1], [drift, -drift])
   const screenY = useTransform(progress, [0, 1], [18 * depth, -18 * depth])
@@ -397,22 +412,59 @@ function GridCard({
       className="relative will-change-transform"
       {...props}
     >
+      {/* three siblings, not one link: the preview opens the recording, the rest opens the repo */}
       <a
         href={p.href}
         target="_blank"
         rel="noopener noreferrer"
         aria-label={`${p.name} on GitHub`}
-        className="block rounded-xl outline-none"
+        className="flex items-center justify-between rounded-xl pb-2 outline-none"
       >
-        <div className="flex items-center justify-between pb-2">
-          <h3 className="font-display text-lg leading-snug font-medium">
-            {p.name}
-          </h3>
-          <GithubLabel active={active} />
-        </div>
-        {/* a window peeking up from the bottom; it rises on hover */}
-        <div className="relative aspect-1200/630 overflow-hidden rounded-xl border bg-muted dark:bg-muted/50">
-          {/* the scroll moves this layer; the window inside it still rises on hover */}
+        <h3 className="font-display text-lg leading-snug font-medium">
+          {p.name}
+        </h3>
+        <GithubLabel active={active} />
+      </a>
+      <a
+        href={p.video?.full ?? p.image?.full ?? p.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={
+          p.video
+            ? `Open the ${p.name} video`
+            : p.image
+              ? `Open the ${p.name} screenshot`
+              : `${p.name} on GitHub`
+        }
+        className={cn(
+          "group relative block overflow-hidden rounded-xl border bg-muted outline-none dark:bg-muted/50",
+          // a recording keeps its own shape; the mock-ups share the wide one
+          p.video || p.image ? "aspect-3420/2224" : "aspect-1200/630"
+        )}
+      >
+        {p.image ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={p.image.src}
+            alt=""
+            loading="lazy"
+            className="absolute inset-0 size-full"
+          />
+        ) : p.video ? (
+          // the frame is the recording's own shape, so nothing is cropped
+          <video
+            src={p.video.preview}
+            poster={p.video.poster}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            aria-hidden
+            className="absolute inset-0 size-full"
+          />
+        ) : (
+          // the scroll moves this layer; the window inside it still rises on hover
           <motion.div
             style={{ y: screenY }}
             className="absolute inset-0 will-change-transform"
@@ -425,10 +477,24 @@ function GridCard({
               <Screen />
             </motion.div>
           </motion.div>
-        </div>
-        <p className="pt-3 font-text text-[0.9375rem] leading-relaxed text-balance text-muted-foreground">
-          {p.blurb}
-        </p>
+        )}
+        {(p.video || p.image) && (
+          <span
+            aria-hidden
+            className="absolute top-2 right-2 grid size-7 place-items-center rounded-lg bg-background/80 text-foreground opacity-0 backdrop-blur transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100"
+          >
+            <HugeiconsIcon icon={ArrowExpandIcon} size={15} />
+          </span>
+        )}
+      </a>
+      <a
+        href={p.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        tabIndex={-1}
+        className="block rounded-xl pt-3 font-text text-[0.9375rem] leading-relaxed text-muted-foreground outline-none"
+      >
+        {p.blurb}
       </a>
     </motion.li>
   )
