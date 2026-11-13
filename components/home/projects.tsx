@@ -47,7 +47,7 @@ const projects: Project[] = [
   {
     name: "OpenScreen",
     blurb:
-      "A Mac screen recorder that edits for you: auto-zoom, smooth cursor, MP4.",
+      "A macOS app that turns a raw screen recording into a polished product demo, with no manual editing.",
     href: "https://github.com/sujiiiiit/openscreen",
     stack: ["Obj-C++", "PixiJS", "WebCodecs"],
     status: "Paused",
